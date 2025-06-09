@@ -5,16 +5,16 @@ import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:sbm_v18/core/network/api_urls.dart';
 import 'package:sbm_v18/core/network/failure.dart';
 import 'package:sbm_v18/features/meeting/data/model/meeting_model.dart';
+import 'package:sbm_v18/features/meeting/data/model/meeting_model1.dart';
 
 class MeetingRemoteDataSource {
-
-
-final token = ApiUrls.token;
+  final token = ApiUrls.token;
 
   final Dio dio = Dio();
 
   addLogger() {
-    dio.interceptors.add(PrettyDioLogger(
+    dio.interceptors.add(
+      PrettyDioLogger(
         requestHeader: true,
         requestBody: true,
         responseBody: true,
@@ -30,11 +30,40 @@ final token = ApiUrls.token;
           }
           // don't print responses with unit8 list data
           return !args.isResponse || !args.hasUint8ListData;
-        }));
+        },
+      ),
+    );
   }
 
+  Future<Either<Failure, List<MeetingModel>>> getMeetings() async {
+    addLogger();
+    try {
+      final response = await dio.get(
+        // 'http://192.168.135.245:8000/api/meeting/get-meeting',
+        ApiUrls.getMeetings,
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        ),
+      );
 
-   Future<Either<Failure, MeetingModel>> createMeet({
+      if (response.statusCode == 200) {
+        final data = response.data;
+        final meetings = List<MeetingModel>.from(
+          data['meetings'].map((x) => MeetingModel.fromJson(x)),
+        );
+        return Right(meetings);
+      } else {
+        return Left(Failure(message: response.data['message']));
+      }
+    } catch (e) {
+      return Left(Failure.handleError(e));
+    }
+  }
+
+  Future<Either<Failure, MeetingModel1>> createMeet({
     required String name,
     required String description,
     required String location,
@@ -66,22 +95,25 @@ final token = ApiUrls.token;
         'deadline_date': deadlineDate.toIso8601String(),
       });
 
-      final response =
-          await dio.post(url, data: data, options: Options(headers: headers));
+      final response = await dio.post(
+        url,
+        data: data,
+        options: Options(headers: headers),
+      );
 
       if (response.statusCode == 201) {
-        final event = MeetingModel.fromJson(response.data['data']['event']);
+        final event = MeetingModel1.fromJson(response.data['data']['event']);
         return right(event);
       } else {
-        return left(Failure(
-          statusCode: response.statusCode,
-          message: response.data['message'] ?? "Failed to create event",
-        ));
+        return left(
+          Failure(
+            statusCode: response.statusCode,
+            message: response.data['message'] ?? "Failed to create event",
+          ),
+        );
       }
     } catch (e) {
       return left(Failure.handleError(e));
     }
   }
-
-  
 }
