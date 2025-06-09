@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sbm_v18/features/meeting/data/data_source/meeting_remote_data_source.dart';
 import 'package:sbm_v18/features/meeting/presentation/manager/meeting_cubit.dart';
 import 'package:sbm_v18/features/meeting/presentation/pages/meeting_page.dart';
+import 'package:sbm_v18/features/meeting/presentation/pages/meeting_page2.dart';
 import 'package:sbm_v18/home.dart';
 
 import 'package:sbm_v18/my_home_page.dart';
@@ -24,12 +25,15 @@ class MyApp extends StatelessWidget {
 
       // home: const MyHomePage(title: 'Jitsi Meet Flutter SDK Sample'),
       // home: Home(),
+      // home: BlocProvider(
+      //   create:
+      //       (_) =>
+      //           MeetingCubit(remote: MeetingRemoteDataSource())..getMeetings(),
+      //   child: MeetingsPage(),
+      // ),
       home: BlocProvider(
-        create:
-            (_) =>
-                MeetingCubit(remote: MeetingRemoteDataSource())..getMeetings(),
-        child: MeetingsPage(),
-      ),
+        create: (context) => MeetingCubit(remote: MeetingRemoteDataSource()),
+        child: MeetingPage2()),
     );
   }
 }

@@ -63,7 +63,39 @@ class MeetingRemoteDataSource {
     }
   }
 
-  Future<Either<Failure, MeetingModel1>> createMeet({
+Future<Either<Failure, MeetingModel>> createMeeting({
+  required String title,
+  required DateTime startTime,
+  required int duration,
+  bool askToJoin = false,
+}) async {
+  try {
+    final response = await dio.post(
+      'http://192.168.135.245:8000/api/meeting/create',
+      data: {
+        "title": title,
+        "start_time": startTime.toIso8601String(),
+        "duration": duration,
+        "ask_to_join": askToJoin,
+      },
+      options: Options(headers: {
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      return right(MeetingModel.fromJson(response.data["meeting"]));
+    } else {
+      return left(Failure(message: response.data['message']));
+    }
+  } catch (e) {
+    return left(Failure.handleError(e));
+  }
+}
+
+
+  Future<Either<Failure, MeetingModel1>> createMeet2({
     required String name,
     required String description,
     required String location,
