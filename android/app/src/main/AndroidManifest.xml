@@ -1,10 +1,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools">
     <application
+        android:requestLegacyExternalStorage="true"
         tools:replace="android:label"
         android:label="sbm_v18"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+        
         <activity
             android:name=".MainActivity"
             android:exported="true"

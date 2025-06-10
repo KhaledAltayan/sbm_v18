@@ -1,9 +1,9 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:jitsi_meet_flutter_sdk/jitsi_meet_flutter_sdk.dart';
 import 'package:record/record.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:file_picker/file_picker.dart';
-
+import 'package:permission_handler/permission_handler.dart';
 
 class MeetingPage5 extends StatefulWidget {
   const MeetingPage5({super.key});
@@ -25,28 +25,51 @@ class _MeetingPage5State extends State<MeetingPage5> {
     super.dispose();
   }
 
-Future<void> pickSaveLocation() async {
-  final dir = await getApplicationDocumentsDirectory(); // يمكنك تغييره إلى getDownloadsDirectory() لو أردت
-  final path = "${dir.path}/meeting_${DateTime.now().millisecondsSinceEpoch}.m4a";
+  Future<void> requestPermissions() async {
+    await [
+      Permission.microphone,
+      Permission.storage,
+      Permission.manageExternalStorage,
+    ].request();
+  }
 
-  setState(() {
-    recordingPath = path;
-  });
+  Future<void> pickSaveLocation() async {
+    await requestPermissions();
 
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(content: Text("📁 سيتم الحفظ في: $recordingPath")),
-  );
-}
+    Directory downloadsDir;
+    if (Platform.isAndroid) {
+      downloadsDir = Directory('/storage/emulated/0/Download');
+    } else {
+      downloadsDir = await getDownloadsDirectory() ?? await getApplicationDocumentsDirectory();
+    }
+
+    final path = "${downloadsDir.path}/meeting_${DateTime.now().millisecondsSinceEpoch}.m4a";
+
+    setState(() {
+      recordingPath = path;
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("📁 سيتم الحفظ في: $recordingPath")),
+    );
+  }
 
   Future<void> startRecording(String room) async {
+    await requestPermissions();
+
     if (await recorder.hasPermission()) {
       if (recordingPath == null) {
-        final dir = await getApplicationDocumentsDirectory();
-        recordingPath = "${dir.path}/$room.m4a";
+        Directory downloadsDir;
+        if (Platform.isAndroid) {
+          downloadsDir = Directory('/storage/emulated/0/Download');
+        } else {
+          downloadsDir = await getDownloadsDirectory() ?? await getApplicationDocumentsDirectory();
+        }
+        recordingPath = "${downloadsDir.path}/$room.m4a";
       }
 
       await recorder.start(
-        RecordConfig(encoder: AudioEncoder.aacLc),
+        const RecordConfig(encoder: AudioEncoder.aacLc),
         path: recordingPath!,
       );
 
