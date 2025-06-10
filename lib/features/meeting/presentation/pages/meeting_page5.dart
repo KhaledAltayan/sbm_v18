@@ -1,31 +1,80 @@
 import 'package:flutter/material.dart';
 import 'package:jitsi_meet_flutter_sdk/jitsi_meet_flutter_sdk.dart';
+import 'package:record/record.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:file_picker/file_picker.dart';
 
 
-class MeetingPage4 extends StatefulWidget {
-  const MeetingPage4({super.key});
+class MeetingPage5 extends StatefulWidget {
+  const MeetingPage5({super.key});
 
   @override
-  State<MeetingPage4> createState() => _MeetingPage4State();
+  State<MeetingPage5> createState() => _MeetingPage5State();
 }
 
-class _MeetingPage4State extends State<MeetingPage4> {
+class _MeetingPage5State extends State<MeetingPage5> {
   final TextEditingController roomController = TextEditingController();
-
-
-
   final JitsiMeet jitsiMeet = JitsiMeet();
+  final AudioRecorder recorder = AudioRecorder();
 
-  void joinAsAdmin(String room) {
+  String? recordingPath;
+
+  @override
+  void dispose() {
+    recorder.dispose();
+    super.dispose();
+  }
+
+Future<void> pickSaveLocation() async {
+  final dir = await getApplicationDocumentsDirectory(); // يمكنك تغييره إلى getDownloadsDirectory() لو أردت
+  final path = "${dir.path}/meeting_${DateTime.now().millisecondsSinceEpoch}.m4a";
+
+  setState(() {
+    recordingPath = path;
+  });
+
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(content: Text("📁 سيتم الحفظ في: $recordingPath")),
+  );
+}
+
+  Future<void> startRecording(String room) async {
+    if (await recorder.hasPermission()) {
+      if (recordingPath == null) {
+        final dir = await getApplicationDocumentsDirectory();
+        recordingPath = "${dir.path}/$room.m4a";
+      }
+
+      await recorder.start(
+        RecordConfig(encoder: AudioEncoder.aacLc),
+        path: recordingPath!,
+      );
+
+      print("🎙️ بدأ التسجيل: $recordingPath");
+    }
+  }
+
+  Future<void> stopRecording() async {
+    if (await recorder.isRecording()) {
+      final path = await recorder.stop();
+      print("🛑 تم إيقاف التسجيل: $path");
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("✔️ تم حفظ التسجيل في: $path")),
+      );
+    }
+  }
+
+  Future<void> joinAsAdmin(String room) async {
+    await startRecording(room);
+
     final options = JitsiMeetConferenceOptions(
-      // serverURL: "https://meet.jit.si",
       serverURL: "https://meet.ffmuc.net/",
       room: room,
       userInfo: JitsiMeetUserInfo(displayName: "Admin"),
       featureFlags: {
         FeatureFlags.meetingNameEnabled: true,
         FeatureFlags.kickOutEnabled: true,
-        //************************************ */
         FeatureFlags.videoShareEnabled: false,
         FeatureFlags.securityOptionEnabled: false,
         FeatureFlags.meetingPasswordEnabled: false,
@@ -38,28 +87,27 @@ class _MeetingPage4State extends State<MeetingPage4> {
         FeatureFlags.carModeEnabled: false,
         FeatureFlags.addPeopleEnabled: false,
         FeatureFlags.speakerStatsEnabled: true,
-        FeatureFlags.recordingEnabled:true
+        FeatureFlags.recordingEnabled: true,
       },
       configOverrides: {
         "startWithAudioMuted": true,
         "startWithVideoMuted": true,
         "disableDeepLinking": true,
         "disableThirdPartyRequests": true,
-
         "subject": "Smart Business Meeting",
       },
     );
+
     jitsiMeet.join(options);
   }
 
   void joinAsParticipant(String room) {
     final options = JitsiMeetConferenceOptions(
-      // serverURL: "https://meet.jit.si",
       serverURL: "https://meet.ffmuc.net/",
       room: room,
       userInfo: JitsiMeetUserInfo(displayName: "Participant"),
       featureFlags: {
-        FeatureFlags.lobbyModeEnabled: false, // تفعيل وضع اللوبّي
+        FeatureFlags.lobbyModeEnabled: false,
         FeatureFlags.inviteEnabled: false,
         FeatureFlags.meetingNameEnabled: true,
         FeatureFlags.kickOutEnabled: true,
@@ -69,22 +117,21 @@ class _MeetingPage4State extends State<MeetingPage4> {
         "startWithVideoMuted": false,
         "disableDeepLinking": true,
         "disableThirdPartyRequests": true,
-
         "subject": "Smart Business Meeting",
       },
     );
+
     jitsiMeet.join(options);
   }
 
   String generateRoomName() {
-    // مثال بسيط لتوليد اسم غرفة عشوائي
     return "room_${DateTime.now().millisecondsSinceEpoch}";
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Jitsi Lobby Demo")),
+      appBar: AppBar(title: const Text("Jitsi Audio Recording")),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -94,18 +141,22 @@ class _MeetingPage4State extends State<MeetingPage4> {
               controller: roomController,
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
-                labelText: "Room Name (مثلاً: my_meet123)",
+                labelText: "Room Name",
               ),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: pickSaveLocation,
+              child: const Text("📁 اختر مكان الحفظ"),
             ),
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: () {
                 final room = generateRoomName();
-                print(room);
                 roomController.text = room;
                 joinAsAdmin(room);
               },
-              child: const Text("New Meeting (Create & Join as Admin)"),
+              child: const Text("🎥 اجتماع جديد (Admin)"),
             ),
             const SizedBox(height: 16),
             ElevatedButton(
@@ -113,13 +164,19 @@ class _MeetingPage4State extends State<MeetingPage4> {
                 final room = roomController.text.trim();
                 if (room.isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("Please enter room name")),
+                    const SnackBar(content: Text("يرجى كتابة اسم الغرفة")),
                   );
                   return;
                 }
                 joinAsParticipant(room);
               },
-              child: const Text("Join Meeting (Wait in Lobby)"),
+              child: const Text("👥 انضمام للاجتماع"),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+              onPressed: stopRecording,
+              child: const Text("🛑 إيقاف التسجيل وحفظه"),
             ),
           ],
         ),

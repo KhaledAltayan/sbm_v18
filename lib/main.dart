@@ -5,6 +5,7 @@ import 'package:sbm_v18/features/meeting/presentation/manager/meeting_cubit.dart
 import 'package:sbm_v18/features/meeting/presentation/pages/meeting_page.dart';
 import 'package:sbm_v18/features/meeting/presentation/pages/meeting_page2.dart';
 import 'package:sbm_v18/features/meeting/presentation/pages/meeting_page4.dart';
+import 'package:sbm_v18/features/meeting/presentation/pages/meeting_page5.dart';
 import 'package:sbm_v18/home.dart';
 
 import 'package:sbm_v18/my_home_page.dart';
@@ -35,7 +36,8 @@ class MyApp extends StatelessWidget {
       //   home: BlocProvider(
       //     create: (context) => MeetingCubit(remote: MeetingRemoteDataSource()),
       //     child: MeetingPage2()),
-      home: MeetingPage4(),
+      // home: MeetingPage4(),
+      home: MeetingPage5(),
     );
   }
 }
