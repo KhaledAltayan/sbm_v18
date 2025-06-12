@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sbm_v18/features/auth/presentation/manager/auth_cubit.dart';
+import 'package:sbm_v18/features/auth/presentation/pages/login_page.dart';
+import 'package:sbm_v18/features/auth/presentation/pages/register_page.dart';
 import 'package:sbm_v18/features/home/navigation_page.dart';
 import 'package:sbm_v18/features/meeting/data/data_source/meeting_remote_data_source.dart';
 import 'package:sbm_v18/features/meeting/presentation/manager/meeting_cubit.dart';
@@ -47,7 +50,16 @@ class MyApp extends StatelessWidget {
       // home: MeetingPage5(),
       // home: MeetingPage6(),
       // home: NotificationPage(),
-      home: NotificationPage2(),
+      // home: NotificationPage2(),
+
+      // home: BlocProvider(
+      //   create: (context) => AuthCubit(),
+      //   child: RegisterPage()),
+
+
+      home: BlocProvider(
+        create: (context) => AuthCubit(),
+        child: LoginPage()),
     );
   }
 }
