@@ -7,14 +7,14 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'components/signin_button.dart';
 import 'dart:async';
 
-class OnboardingScreen extends StatefulWidget {
-  const OnboardingScreen({super.key});
+class OnboardingPage extends StatefulWidget {
+  const OnboardingPage({super.key});
 
   @override
-  OnboardingScreenState createState() => OnboardingScreenState();
+  OnboardingPageState createState() => OnboardingPageState();
 }
 
-class OnboardingScreenState extends State<OnboardingScreen> {
+class OnboardingPageState extends State<OnboardingPage> {
   final PageController _controller = PageController();
   int currentIndex = 0;
   Timer? _autoScrollTimer;
@@ -46,24 +46,8 @@ class OnboardingScreenState extends State<OnboardingScreen> {
     _startAutoScroll();
   }
 
-  // void _startAutoScroll() {
-  //   _autoScrollTimer = Timer.periodic(const Duration(seconds: 4), (_) {
-  //     if (_controller.hasClients) {
-  //       int nextPage = currentIndex + 1;
-  //       if (nextPage >= pages.length) {
-  //         nextPage = 0;
-  //       }
-  //       _controller.animateToPage(
-  //         nextPage,
-  //         duration: const Duration(milliseconds: 500),
-  //         curve: Curves.easeInOut,
-  //       );
-  //     }
-  //   });
-  // }
-
   void _startAutoScroll() {
-    _autoScrollTimer = Timer.periodic(const Duration(seconds: 4), (_) {
+    _autoScrollTimer = Timer.periodic(const Duration(seconds: 3), (_) {
       if (!mounted || !_controller.hasClients) return;
 
       int nextPage = currentIndex + 1;

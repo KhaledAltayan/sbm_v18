@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sbm_v18/features/home/navigation_page.dart';
 import 'package:sbm_v18/features/meeting/data/data_source/meeting_remote_data_source.dart';
 import 'package:sbm_v18/features/meeting/presentation/manager/meeting_cubit.dart';
 import 'package:sbm_v18/features/meeting/presentation/pages/meeting_page.dart';
 import 'package:sbm_v18/features/meeting/presentation/pages/meeting_page2.dart';
 import 'package:sbm_v18/features/meeting/presentation/pages/meeting_page4.dart';
 import 'package:sbm_v18/features/meeting/presentation/pages/meeting_page5.dart';
-import 'package:sbm_v18/features/splash&onboarding/splash_screen.dart';
+import 'package:sbm_v18/features/onboarding/onboarding_page.dart';
+
 import 'package:sbm_v18/home.dart';
 
 import 'package:sbm_v18/my_home_page.dart';
@@ -39,8 +41,8 @@ class MyApp extends StatelessWidget {
       //     create: (context) => MeetingCubit(remote: MeetingRemoteDataSource()),
       //     child: MeetingPage2()),
       // home: MeetingPage4(),
-      home: MeetingPage5(),
-      // home: SplashScreen(),
+      // home: MeetingPage5(),
+      home: NavigationPage(),
     );
   }
 }

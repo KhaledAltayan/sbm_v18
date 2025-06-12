@@ -8,5 +8,7 @@ class AppAssets {
   //Icons(PNG)
   // static const String message = "assets/icons/png/MessageImage.png";
   //Icons(SVG)
-  static const String appLogoIcon = "assets/icons/svg/app_logo.svg";
+  static const String meetIcon1 = "assets/icons/svg/meet_icon1.svg";
+  static const String meetIcon2 = "assets/icons/svg/meet_icon2.svg";
+  static const String meetIcon3 = "assets/icons/svg/meet_icon3.svg";
 }

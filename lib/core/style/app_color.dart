@@ -8,4 +8,7 @@ class AppColor {
   static Color blueRibbon = const Color(0xff006FEE);
   static Color iron = const Color(0xffD4D4D8);
   static Color alabaster = const Color(0xffFAFAFA);
+  static Color shark = const Color(0xff27272A);
+
+
 }
