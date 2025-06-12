@@ -6,6 +6,7 @@ import 'package:sbm_v18/features/meeting/presentation/pages/meeting_page.dart';
 import 'package:sbm_v18/features/meeting/presentation/pages/meeting_page2.dart';
 import 'package:sbm_v18/features/meeting/presentation/pages/meeting_page4.dart';
 import 'package:sbm_v18/features/meeting/presentation/pages/meeting_page5.dart';
+import 'package:sbm_v18/features/splash&onboarding/splash_screen.dart';
 import 'package:sbm_v18/home.dart';
 
 import 'package:sbm_v18/my_home_page.dart';
@@ -19,7 +20,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Jitsi Meet Flutter SDK Sample',
+      debugShowCheckedModeBanner: false,
+      title: 'Smart Business Meeting',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
@@ -38,6 +40,7 @@ class MyApp extends StatelessWidget {
       //     child: MeetingPage2()),
       // home: MeetingPage4(),
       home: MeetingPage5(),
+      // home: SplashScreen(),
     );
   }
 }
