@@ -7,11 +7,14 @@ import 'package:sbm_v18/features/meeting/presentation/pages/meeting_page.dart';
 import 'package:sbm_v18/features/meeting/presentation/pages/meeting_page2.dart';
 import 'package:sbm_v18/features/meeting/presentation/pages/meeting_page4.dart';
 import 'package:sbm_v18/features/meeting/presentation/pages/meeting_page5.dart';
+import 'package:sbm_v18/features/meeting/presentation/pages/meeting_page6.dart';
 import 'package:sbm_v18/features/onboarding/onboarding_page.dart';
 
 import 'package:sbm_v18/home.dart';
 
 import 'package:sbm_v18/my_home_page.dart';
+import 'package:sbm_v18/notification2.dart';
+import 'package:sbm_v18/notifigation_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -42,7 +45,9 @@ class MyApp extends StatelessWidget {
       //     child: MeetingPage2()),
       // home: MeetingPage4(),
       // home: MeetingPage5(),
-      home: NavigationPage(),
+      // home: MeetingPage6(),
+      // home: NotificationPage(),
+      home: NotificationPage2(),
     );
   }
 }
