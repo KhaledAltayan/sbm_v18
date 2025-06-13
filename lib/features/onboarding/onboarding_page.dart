@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sbm_v18/core/style/app_assets.dart';
 import 'package:sbm_v18/core/style/app_color.dart';
 import 'package:sbm_v18/core/style/app_text_styles.dart';
+import 'package:sbm_v18/features/auth/presentation/manager/auth_cubit.dart';
+import 'package:sbm_v18/features/auth/presentation/pages/login_page.dart';
+import 'package:sbm_v18/features/auth/presentation/pages/register_page.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import 'components/signin_button.dart';
@@ -145,12 +149,36 @@ class OnboardingPageState extends State<OnboardingPage> {
               padding: const EdgeInsets.symmetric(horizontal: 30),
               child: Column(
                 children: [
-                  SigninButton(text: 'Sign In', onTap: () {}),
+                  SigninButton(
+                    text: 'Sign In',
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder:
+                              (context2) => BlocProvider.value(
+                                value: BlocProvider.of<AuthCubit>(context),
+                                child: LoginPage()),
+                        ),
+                      );
+                    },
+                  ),
 
                   const SizedBox(height: 16),
 
                   OutlinedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder:
+                              (context2) => BlocProvider.value(
+                                 value: BlocProvider.of<AuthCubit>(context),
+                                child: RegisterPage(),
+                              ),
+                        ),
+                      );
+                    },
                     style: OutlinedButton.styleFrom(
                       minimumSize: const Size(double.infinity, 48),
                       side: BorderSide(color: AppColor.blueRibbon, width: 1),

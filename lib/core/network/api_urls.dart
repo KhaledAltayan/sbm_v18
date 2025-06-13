@@ -10,6 +10,7 @@ class ApiUrls {
   static const String getMeetings = '$_baseUrl/api/meeting/get-meeting';
   static const String register = '$_baseUrl/api/auth/register';
   static const String login = '$_baseUrl/api/auth/login';
+  static const String logout = '$_baseUrl/api/auth/logout';
   // static const String login = '$_baseUrl/api/auth/login';
   // static const String register = '$_baseUrl/api/auth/register';
 

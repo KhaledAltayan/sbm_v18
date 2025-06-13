@@ -1,12 +1,15 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:sbm_v18/core/helpers/token_helper.dart';
+import 'package:sbm_v18/core/helpers/user_local_data.dart';
 import 'package:sbm_v18/features/auth/presentation/manager/auth_cubit.dart';
 import 'package:sbm_v18/features/auth/presentation/manager/auth_state.dart';
-
-
+import 'package:sbm_v18/features/meeting/presentation/pages/meeting_page5.dart';
+import 'package:sbm_v18/features/profile/profile_page.dart';
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -25,15 +28,17 @@ class _RegisterPageState extends State<RegisterPage> {
   final _birthdayController = TextEditingController();
   final _phoneNumberController = TextEditingController();
   final _addressController = TextEditingController();
-  final _fcmToken = "dummy_fcm_token"; // replace with your FCM token retrieval
+
+  final _fcmToken = TokenHelper.generateRandomFcmToken();
 
   File? _pickedImage;
 
   final ImagePicker _picker = ImagePicker();
 
   Future<void> _pickImage() async {
-    final XFile? pickedFile =
-        await _picker.pickImage(source: ImageSource.gallery);
+    final XFile? pickedFile = await _picker.pickImage(
+      source: ImageSource.gallery,
+    );
     if (pickedFile != null) {
       setState(() {
         _pickedImage = File(pickedFile.path);
@@ -55,11 +60,14 @@ class _RegisterPageState extends State<RegisterPage> {
       gender: _genderController.text.trim(),
       birthday: _birthdayController.text.trim(),
       fcmToken: _fcmToken,
-      phoneNumber: _phoneNumberController.text.trim().isEmpty
-          ? null
-          : _phoneNumberController.text.trim(),
+      phoneNumber:
+          _phoneNumberController.text.trim().isEmpty
+              ? null
+              : _phoneNumberController.text.trim(),
       address:
-          _addressController.text.trim().isEmpty ? null : _addressController.text.trim(),
+          _addressController.text.trim().isEmpty
+              ? null
+              : _addressController.text.trim(),
       imagePath: _pickedImage?.path,
     );
   }
@@ -83,14 +91,44 @@ class _RegisterPageState extends State<RegisterPage> {
     return Scaffold(
       appBar: AppBar(title: const Text('Register')),
       body: BlocConsumer<AuthCubit, AuthState>(
-        listener: (context, state) {
+        // listener: (context, state) {
+        //   if (state.isSuccess == AuthIsSuccess.registered) {
+        //     ScaffoldMessenger.of(context).showSnackBar(
+        //       SnackBar(content: Text('Registration successful!')),
+        //     );
+        //   } else if (state.isFailure == AuthIsFailure.registrationFailed) {
+        //     ScaffoldMessenger.of(context).showSnackBar(
+        //       SnackBar(content: Text(state.failure?.message ?? 'Registration failed')),
+        //     );
+        //   }
+        // },
+        listener: (context, state) async {
           if (state.isSuccess == AuthIsSuccess.registered) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Registration successful!')),
+              const SnackBar(content: Text('Registration successful!')),
+            );
+
+            // Save user info if available in state
+            if (state.userInfo != null) {
+              await UserLocalData.saveUserInfo(state.userInfo!);
+            }
+
+            // Navigate to home page
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder:
+                    (context2) => BlocProvider.value(
+                      value: BlocProvider.of<AuthCubit>(context),
+                      child: ProfilePage(),
+                    ),
+              ),
             );
           } else if (state.isFailure == AuthIsFailure.registrationFailed) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.failure?.message ?? 'Registration failed')),
+              SnackBar(
+                content: Text(state.failure?.message ?? 'Registration failed'),
+              ),
             );
           }
         },
@@ -109,12 +147,14 @@ class _RegisterPageState extends State<RegisterPage> {
                     onTap: _pickImage,
                     child: CircleAvatar(
                       radius: 50,
-                      backgroundImage: _pickedImage != null
-                          ? FileImage(_pickedImage!)
-                          : null,
-                      child: _pickedImage == null
-                          ? const Icon(Icons.add_a_photo, size: 40)
-                          : null,
+                      backgroundImage:
+                          _pickedImage != null
+                              ? FileImage(_pickedImage!)
+                              : null,
+                      child:
+                          _pickedImage == null
+                              ? const Icon(Icons.add_a_photo, size: 40)
+                              : null,
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -133,25 +173,30 @@ class _RegisterPageState extends State<RegisterPage> {
                     controller: _emailController,
                     decoration: const InputDecoration(labelText: 'Email'),
                     keyboardType: TextInputType.emailAddress,
-                    validator: (v) =>
-                        v!.contains('@') ? null : 'Enter a valid email',
+                    validator:
+                        (v) => v!.contains('@') ? null : 'Enter a valid email',
                   ),
                   TextFormField(
                     controller: _passwordController,
                     decoration: const InputDecoration(labelText: 'Password'),
                     obscureText: true,
-                    validator: (v) => v!.length < 6
-                        ? 'Password must be at least 6 characters'
-                        : null,
+                    validator:
+                        (v) =>
+                            v!.length < 6
+                                ? 'Password must be at least 6 characters'
+                                : null,
                   ),
                   TextFormField(
                     controller: _confirmPasswordController,
-                    decoration:
-                        const InputDecoration(labelText: 'Confirm Password'),
+                    decoration: const InputDecoration(
+                      labelText: 'Confirm Password',
+                    ),
                     obscureText: true,
-                    validator: (v) => v != _passwordController.text
-                        ? 'Passwords do not match'
-                        : null,
+                    validator:
+                        (v) =>
+                            v != _passwordController.text
+                                ? 'Passwords do not match'
+                                : null,
                   ),
                   TextFormField(
                     controller: _genderController,
@@ -160,17 +205,23 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                   TextFormField(
                     controller: _birthdayController,
-                    decoration: const InputDecoration(labelText: 'Birthday (YYYY-MM-DD)'),
+                    decoration: const InputDecoration(
+                      labelText: 'Birthday (YYYY-MM-DD)',
+                    ),
                     validator: (v) => v!.isEmpty ? 'Enter birthday' : null,
                   ),
                   TextFormField(
                     controller: _phoneNumberController,
-                    decoration: const InputDecoration(labelText: 'Phone Number (optional)'),
+                    decoration: const InputDecoration(
+                      labelText: 'Phone Number (optional)',
+                    ),
                     keyboardType: TextInputType.phone,
                   ),
                   TextFormField(
                     controller: _addressController,
-                    decoration: const InputDecoration(labelText: 'Address (optional)'),
+                    decoration: const InputDecoration(
+                      labelText: 'Address (optional)',
+                    ),
                   ),
 
                   const SizedBox(height: 20),

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sbm_v18/core/helpers/user_local_data.dart';
+import 'package:sbm_v18/features/auth/data/model/user_information_model.dart';
 import 'package:sbm_v18/features/auth/presentation/manager/auth_cubit.dart';
+import 'package:sbm_v18/features/auth/presentation/manager/auth_state.dart';
 import 'package:sbm_v18/features/auth/presentation/pages/login_page.dart';
 import 'package:sbm_v18/features/auth/presentation/pages/register_page.dart';
 import 'package:sbm_v18/features/home/navigation_page.dart';
@@ -12,6 +15,7 @@ import 'package:sbm_v18/features/meeting/presentation/pages/meeting_page4.dart';
 import 'package:sbm_v18/features/meeting/presentation/pages/meeting_page5.dart';
 import 'package:sbm_v18/features/meeting/presentation/pages/meeting_page6.dart';
 import 'package:sbm_v18/features/onboarding/onboarding_page.dart';
+import 'package:sbm_v18/features/profile/profile_page.dart';
 
 import 'package:sbm_v18/home.dart';
 
@@ -19,12 +23,15 @@ import 'package:sbm_v18/my_home_page.dart';
 import 'package:sbm_v18/notification2.dart';
 import 'package:sbm_v18/notifigation_page.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final userInfo = await UserLocalData.getUserInfo();
+  runApp(MyApp(userInfo: userInfo));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({super.key, required this.userInfo});
+  final UserInformationModel? userInfo;
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -56,10 +63,31 @@ class MyApp extends StatelessWidget {
       //   create: (context) => AuthCubit(),
       //   child: RegisterPage()),
 
+      //   home: BlocProvider(
+      //     create: (context) => AuthCubit(),
+      //     child: LoginPage()),
 
-      home: BlocProvider(
-        create: (context) => AuthCubit(),
-        child: LoginPage()),
+      /************************************************************************ */
+      home:
+          userInfo == null
+              ? BlocProvider(
+                // create: (_) => AuthCubit(),
+                create: (context) => AuthCubit(),
+                child: OnboardingPage(),
+              )
+              : BlocProvider(
+                // create: (_) {
+                //   final cubit = AuthCubit();
+                //   cubit.loadUserInfo(userInfo!); // ✅ use the public method
+                //   return cubit;
+                // },
+                create: (context) => AuthCubit()..loadUserInfo(userInfo!),
+                child: ProfilePage(),
+              ),
+
+      /************************************************************************ */
+
+      // home: NavigationPage(),
     );
   }
 }

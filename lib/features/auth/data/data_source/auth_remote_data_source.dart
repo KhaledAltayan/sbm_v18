@@ -115,4 +115,35 @@ class AuthRemoteDataSource {
   }
 }
 
+
+
+Future<Either<Failure, String>> logout({required String token}) async {
+  try {
+    final response = await dio.post(
+      ApiUrls.logout,
+      options: Options(
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      ),
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 204) {
+      return right(response.data['message'] ?? 'Logout successful.');
+    } else {
+      return left(Failure(
+        statusCode: response.statusCode,
+        message: response.data['message'] ?? 'Logout failed.',
+      ));
+    }
+  } catch (e) {
+    return left(Failure.handleError(e));
+  }
+}
+
+
+
+
+
 }

@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sbm_v18/core/helpers/user_local_data.dart';
 import 'package:sbm_v18/core/network/failure.dart';
 import 'package:sbm_v18/features/auth/data/data_source/auth_remote_data_source.dart';
 import 'package:sbm_v18/features/auth/data/model/user_information_model.dart';
@@ -92,11 +93,45 @@ class AuthCubit extends Cubit<AuthState> {
     );
   }
 
-  // void resetStatus() {
-  //   emit(state.copyWith(
-  //     isLoading: AuthIsLoading.none,
-  //     isSuccess: AuthIsSuccess.none,
-  //     isFailure: AuthIsFailure.none,
-  //   ));
-  // }
+
+  Future<void> logout() async {
+  emit(state.copyWith(isLoading: AuthIsLoading.loggingOut));
+
+  final token = state.userInfo?.token;
+  if (token == null) {
+    emit(state.copyWith(
+      failure: Failure(message: "No token found"),
+      isLoading: AuthIsLoading.none,
+      isFailure: AuthIsFailure.logoutFailed,
+    ));
+    return;
+  }
+
+  final result = await remote.logout(token: token);
+
+  result.fold(
+    (Failure failure) {
+      emit(state.copyWith(
+        failure: failure,
+        isLoading: AuthIsLoading.none,
+        isFailure: AuthIsFailure.logoutFailed,
+      ));
+    },
+    (String message) async {
+      await UserLocalData.clearUserInfo();
+      emit(state.copyWith(
+        userInfo: null,
+        isLoading: AuthIsLoading.none,
+        isSuccess: AuthIsSuccess.loggedOut,
+      ));
+    },
+  );
+}
+
+ void loadUserInfo(UserInformationModel user) {
+    emit(state.copyWith(userInfo: user));
+  }
+
+
+ 
 }

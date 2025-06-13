@@ -34,23 +34,6 @@ class AuthState {
   }
 }
 
-enum AuthIsLoading {
-  none,
-  registering,
-  loggingIn,
-  loadingUser,
-}
-
-enum AuthIsSuccess {
-  none,
-  registered,
-  loggedIn,
-  fetchedUser,
-}
-
-enum AuthIsFailure {
-  none,
-  registrationFailed,
-  loginFailed,
-  fetchUserFailed,
-}
+enum AuthIsLoading { none, registering, loggingIn, loggingOut }
+enum AuthIsSuccess { none, registered, loggedIn, loggedOut }
+enum AuthIsFailure { none, registrationFailed, loginFailed, logoutFailed }
