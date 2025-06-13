@@ -4,6 +4,7 @@ import 'package:sbm_v18/core/style/app_assets.dart';
 import 'package:sbm_v18/core/style/app_color.dart';
 import 'package:sbm_v18/features/meeting/presentation/pages/meeting_page4.dart';
 import 'package:sbm_v18/features/meeting/presentation/pages/meeting_page5.dart';
+import 'package:sbm_v18/features/meeting/presentation/pages/meeting_page7.dart';
 
 class NavigationPage extends StatefulWidget {
   const NavigationPage({super.key});
@@ -14,7 +15,7 @@ class NavigationPage extends StatefulWidget {
 
 class _NavigationPageState extends State<NavigationPage> {
   int _currentIndex = 0;
-  List<Widget> body = [MeetingPage5(), MeetingPage4(), MeetingPage4()];
+  List<Widget> body = [MeetingPage5(), MeetingPage7(), MeetingPage4()];
   @override
   Widget build(BuildContext context) {
     return Scaffold(

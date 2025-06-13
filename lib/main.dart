@@ -68,26 +68,26 @@ class MyApp extends StatelessWidget {
       //     child: LoginPage()),
 
       /************************************************************************ */
-      home:
-          userInfo == null
-              ? BlocProvider(
-                // create: (_) => AuthCubit(),
-                create: (context) => AuthCubit(),
-                child: OnboardingPage(),
-              )
-              : BlocProvider(
-                // create: (_) {
-                //   final cubit = AuthCubit();
-                //   cubit.loadUserInfo(userInfo!); // ✅ use the public method
-                //   return cubit;
-                // },
-                create: (context) => AuthCubit()..loadUserInfo(userInfo!),
-                child: ProfilePage(),
-              ),
+      // home:
+      //     userInfo == null
+      //         ? BlocProvider(
+      //           // create: (_) => AuthCubit(),
+      //           create: (context) => AuthCubit(),
+      //           child: OnboardingPage(),
+      //         )
+      //         : BlocProvider(
+      //           // create: (_) {
+      //           //   final cubit = AuthCubit();
+      //           //   cubit.loadUserInfo(userInfo!); // ✅ use the public method
+      //           //   return cubit;
+      //           // },
+      //           create: (context) => AuthCubit()..loadUserInfo(userInfo!),
+      //           child: ProfilePage(),
+      //         ),
 
       /************************************************************************ */
 
-      // home: NavigationPage(),
+      home: NavigationPage(),
     );
   }
 }
