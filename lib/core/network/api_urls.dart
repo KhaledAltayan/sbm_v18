@@ -11,6 +11,7 @@ class ApiUrls {
   static const String register = '$_baseUrl/api/auth/register';
   static const String login = '$_baseUrl/api/auth/login';
   static const String logout = '$_baseUrl/api/auth/logout';
+  static const String askToJoin = '$_baseUrl/api/invitation/ask-to-join';
   // static const String login = '$_baseUrl/api/auth/login';
   // static const String register = '$_baseUrl/api/auth/register';
 

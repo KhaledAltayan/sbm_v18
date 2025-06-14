@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sbm_v18/core/helpers/user_local_data.dart';
@@ -16,15 +17,20 @@ import 'package:sbm_v18/features/meeting/presentation/pages/meeting_page5.dart';
 import 'package:sbm_v18/features/meeting/presentation/pages/meeting_page6.dart';
 import 'package:sbm_v18/features/onboarding/onboarding_page.dart';
 import 'package:sbm_v18/features/profile/profile_page.dart';
+import 'package:sbm_v18/firebase_options.dart';
 
 import 'package:sbm_v18/home.dart';
 
 import 'package:sbm_v18/my_home_page.dart';
 import 'package:sbm_v18/notification2.dart';
+import 'package:sbm_v18/notification_service.dart';
 import 'package:sbm_v18/notifigation_page.dart';
+import 'package:sbm_v18/puseh55.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  await NotificationService.instance.initialize();
   final userInfo = await UserLocalData.getUserInfo();
   runApp(MyApp(userInfo: userInfo));
 }
@@ -86,8 +92,8 @@ class MyApp extends StatelessWidget {
       //         ),
 
       /************************************************************************ */
-
       home: NavigationPage(),
+      // home: PusherTestPage(),
     );
   }
 }

@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sbm_v18/core/style/app_assets.dart';
+
+import 'package:sbm_v18/features/meeting/presentation/manager/meeting_cubit1.dart';
+import 'package:sbm_v18/features/meeting/presentation/manager/meeting_state1.dart';
 import 'package:sbm_v18/features/meeting/presentation/pages/invite_meet_page.dart';
+import 'package:sbm_v18/features/meeting/presentation/pages/m1.dart';
 
 class MeetingPage7 extends StatelessWidget {
   const MeetingPage7({super.key});
@@ -56,7 +61,8 @@ class MeetingPage7 extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                          builder: (context) => InviteMeetPage(roomId: "1234team"),
+                            builder:
+                                (context) => InviteMeetPage(roomId: "1234team"),
                           ),
                         );
                       },
@@ -69,18 +75,34 @@ class MeetingPage7 extends StatelessWidget {
                   const SizedBox(height: 16),
                   SizedBox(
                     width: double.infinity,
-                    child: OutlinedButton(
-                      style: OutlinedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        side: const BorderSide(color: Colors.blue),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                    child: BlocProvider.value(
+                      value: BlocProvider.of<MeetingCubit1>(context),
+                      child: OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          side: const BorderSide(color: Colors.blue),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
                         ),
-                      ),
-                      onPressed: () => _showJoinMeetingSheet(context),
-                      child: const Text(
-                        'Join Meet',
-                        style: TextStyle(fontSize: 16, color: Colors.blue),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder:
+                                  (context2) => BlocProvider.value(
+                                    value: BlocProvider.of<MeetingCubit1>(
+                                      context,
+                                    ),
+                                    child: JoinMeetingPage(),
+                                  ),
+                            ),
+                          );
+                        },
+                        child: const Text(
+                          'Join Meet',
+                          style: TextStyle(fontSize: 16, color: Colors.blue),
+                        ),
                       ),
                     ),
                   ),
@@ -93,84 +115,185 @@ class MeetingPage7 extends StatelessWidget {
     );
   }
 
-  void _showJoinMeetingSheet(BuildContext context) {
-    final TextEditingController _roomIdController = TextEditingController();
+  // void _showJoinMeetingSheet(BuildContext context) {
+  //   final TextEditingController _roomIdController = TextEditingController();
 
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      isScrollControlled: true,
-      builder:
-          (context) => Padding(
-            padding: EdgeInsets.only(
-              bottom: MediaQuery.of(context).viewInsets.bottom,
-              left: 20,
-              right: 20,
-              top: 20,
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text(
-                  "Enter Room ID",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  children: [
-                    // Room ID Input
-                    Expanded(
-                      child: TextField(
-                        controller: _roomIdController,
-                        decoration: InputDecoration(
-                          hintText: "e.g. team1234",
-                          contentPadding: const EdgeInsets.symmetric(
-                            vertical: 14,
-                            horizontal: 16,
-                          ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    // Join Button
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 20,
-                          vertical: 16,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      onPressed: () {
-                        final roomId = _roomIdController.text.trim();
-                        if (roomId.isNotEmpty) {
-                          Navigator.pop(context); // Close sheet
-                          // TODO: Handle joining the room with this ID
-                          print("Joining room: $roomId");
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text("Please enter a room ID"),
-                            ),
-                          );
-                        }
-                      },
-                      child: const Text("Join"),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 20),
-              ],
-            ),
-          ),
-    );
-  }
+  //   showModalBottomSheet(
+  //     context: context,
+  //     shape: const RoundedRectangleBorder(
+  //       borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+  //     ),
+  //     isScrollControlled: true,
+  //     builder:
+  //         (context) => Padding(
+  //           padding: EdgeInsets.only(
+  //             bottom: MediaQuery.of(context).viewInsets.bottom,
+  //             left: 20,
+  //             right: 20,
+  //             top: 20,
+  //           ),
+  //           child: Column(
+  //             mainAxisSize: MainAxisSize.min,
+  //             children: [
+  //               const Text(
+  //                 "Enter Room ID",
+  //                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+  //               ),
+  //               const SizedBox(height: 16),
+  //               Row(
+  //                 children: [
+  //                   // Room ID Input
+  //                   Expanded(
+  //                     child: TextField(
+  //                       controller: _roomIdController,
+  //                       decoration: InputDecoration(
+  //                         hintText: "e.g. team1234",
+  //                         contentPadding: const EdgeInsets.symmetric(
+  //                           vertical: 14,
+  //                           horizontal: 16,
+  //                         ),
+  //                         border: OutlineInputBorder(
+  //                           borderRadius: BorderRadius.circular(12),
+  //                         ),
+  //                       ),
+  //                     ),
+  //                   ),
+  //                   const SizedBox(width: 12),
+  //                   // Join Button
+  //                   ElevatedButton(
+  //                     style: ElevatedButton.styleFrom(
+  //                       backgroundColor: Colors.blue,
+  //                       padding: const EdgeInsets.symmetric(
+  //                         horizontal: 20,
+  //                         vertical: 16,
+  //                       ),
+  //                       shape: RoundedRectangleBorder(
+  //                         borderRadius: BorderRadius.circular(12),
+  //                       ),
+  //                     ),
+  //                     onPressed: () {
+  //                       final roomId = _roomIdController.text.trim();
+  //                       if (roomId.isNotEmpty) {
+  //                         Navigator.pop(context); // Close sheet
+  //                         // TODO: Handle joining the room with this ID
+  //                         print("Joining room: $roomId");
+  //                       } else {
+  //                         ScaffoldMessenger.of(context).showSnackBar(
+  //                           const SnackBar(
+  //                             content: Text("Please enter a room ID"),
+  //                           ),
+  //                         );
+  //                       }
+  //                     },
+  //                     child: const Text("Join"),
+  //                   ),
+  //                 ],
+  //               ),
+  //               const SizedBox(height: 20),
+  //             ],
+  //           ),
+  //         ),
+  //   );
+  // }
+
+  // void _showJoinMeetingSheet(BuildContext context) {
+  //   final TextEditingController _roomIdController = TextEditingController();
+  //   // final cubit = context.read<MeetingCubit1>();
+
+  //   showModalBottomSheet(
+  //     context: context,
+  //     isScrollControlled: true,
+  //     shape: const RoundedRectangleBorder(
+  //       borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+  //     ),
+  //     builder: (context2) {
+  //       return Padding(
+  //         padding: EdgeInsets.only(
+  //           bottom: MediaQuery.of(context).viewInsets.bottom,
+  //           left: 20,
+  //           right: 20,
+  //           top: 20,
+  //         ),
+  //         child: BlocConsumer<MeetingCubit1, MeetingState1>(
+  //           listener: (context2, state) {
+  //             if (state.isSuccess) {
+  //               Navigator.pop(context);
+  //               ScaffoldMessenger.of(context).showSnackBar(
+  //                 const SnackBar(content: Text("Request sent successfully")),
+  //               );
+  //               context.read<MeetingCubit1>().resetState();
+  //             } else if (state.failure != null) {
+  //               ScaffoldMessenger.of(
+  //                 context,
+  //               ).showSnackBar(SnackBar(content: Text(state.failure!.message)));
+  //             }
+  //           },
+  //           builder: (context3, state) {
+  //             return Column(
+  //               mainAxisSize: MainAxisSize.min,
+  //               children: [
+  //                 const Text(
+  //                   "Enter Room ID",
+  //                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+  //                 ),
+  //                 const SizedBox(height: 16),
+  //                 Row(
+  //                   children: [
+  //                     Expanded(
+  //                       child: TextField(
+  //                         controller: _roomIdController,
+  //                         decoration: InputDecoration(
+  //                           hintText: "e.g. team1234",
+  //                           border: OutlineInputBorder(
+  //                             borderRadius: BorderRadius.circular(12),
+  //                           ),
+  //                         ),
+  //                       ),
+  //                     ),
+  //                     const SizedBox(width: 12),
+  //                     ElevatedButton(
+  //                       onPressed:
+  //                           state.isLoading
+  //                               ? null
+  //                               : () {
+  //                                 final roomId = _roomIdController.text.trim();
+  //                                 if (roomId.isNotEmpty) {
+  //                                   context.read<MeetingCubit1>().requestToJoin(roomId);
+  //                                 } else {
+  //                                   ScaffoldMessenger.of(context).showSnackBar(
+  //                                     const SnackBar(
+  //                                       content: Text("Please enter a room ID"),
+  //                                     ),
+  //                                   );
+  //                                 }
+  //                               },
+  //                       style: ElevatedButton.styleFrom(
+  //                         backgroundColor: Colors.blue,
+  //                         padding: const EdgeInsets.symmetric(
+  //                           horizontal: 20,
+  //                           vertical: 16,
+  //                         ),
+  //                         shape: RoundedRectangleBorder(
+  //                           borderRadius: BorderRadius.circular(12),
+  //                         ),
+  //                       ),
+  //                       child:
+  //                           state.isLoading
+  //                               ? const CircularProgressIndicator(
+  //                                 color: Colors.white,
+  //                                 strokeWidth: 2,
+  //                               )
+  //                               : const Text("Join"),
+  //                     ),
+  //                   ],
+  //                 ),
+  //                 const SizedBox(height: 20),
+  //               ],
+  //             );
+  //           },
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 }

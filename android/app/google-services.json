@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "148008250559",
+    "project_id": "tasklink-7a372",
+    "storage_bucket": "tasklink-7a372.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:148008250559:android:f5253cc9b0c846e5e82a0a",
+        "android_client_info": {
+          "package_name": "com.example.sbm_v18"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCU6sABNEQp1Rg-6jpz011bRtKvkGVMmL4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:148008250559:android:21b7910ea251a0bce82a0a",
+        "android_client_info": {
+          "package_name": "com.example.task_link_final1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCU6sABNEQp1Rg-6jpz011bRtKvkGVMmL4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
