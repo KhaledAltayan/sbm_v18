@@ -15,6 +15,7 @@ class ApiUrls {
   static const String searchMeetings = '$_baseUrl/api/meeting/search-by-date';
 static const String respondToCreatorInvitation = '$_baseUrl/api/invitation/respond-to-join-request';
 static const String inviteByCreator = '$_baseUrl/api/invitation/invite-by-creator';
+static const String responseUser = '$_baseUrl/api/invitation/ask-to-join-using-fcm';
 
   static const String register = '$_baseUrl/api/auth/register';
   static const String login = '$_baseUrl/api/auth/login';

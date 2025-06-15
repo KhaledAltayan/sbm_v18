@@ -168,13 +168,13 @@
 //   }
 // }
 
-
-
 import 'dart:convert';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:sbm_v18/core/services/api_service.dart';
+
 // Note: You'll need a way to access your TokenModel.
 // This example assumes it's accessible.
 // import 'package:sbm_v18/core/model/token_model.dart';
@@ -199,7 +199,9 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 @pragma('vm:entry-point')
 void notificationTapBackground(NotificationResponse details) {
   if (kDebugMode) {
-    print("Notification action tapped in background: action '${details.actionId}' with payload: ${details.payload}");
+    print(
+      "Notification action tapped in background: action '${details.actionId}' with payload: ${details.payload}",
+    );
   }
   // This function acts as a bridge from the background isolate to our main service logic.
   NotificationService.instance.handleNotificationAction(
@@ -211,6 +213,8 @@ void notificationTapBackground(NotificationResponse details) {
 class NotificationService {
   NotificationService._();
   static final NotificationService instance = NotificationService._();
+
+  final ApiService _apiService = ApiService();
 
   final _messaging = FirebaseMessaging.instance;
   final _localNotifications = FlutterLocalNotificationsPlugin();
@@ -250,11 +254,15 @@ class NotificationService {
     );
 
     await _localNotifications
-        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >()
         ?.createNotificationChannel(channel);
 
     // Initialization settings for Android and iOS (iOS is simpler).
-    const androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
+    const androidSettings = AndroidInitializationSettings(
+      '@mipmap/ic_launcher',
+    );
     const settings = InitializationSettings(android: androidSettings);
 
     await _localNotifications.initialize(
@@ -262,7 +270,9 @@ class NotificationService {
       // Handles taps on notifications (body or actions) when the app is in the FOREGROUND.
       onDidReceiveNotificationResponse: (details) {
         if (kDebugMode) {
-          print("Notification tapped in foreground: action '${details.actionId}' with payload: ${details.payload}");
+          print(
+            "Notification tapped in foreground: action '${details.actionId}' with payload: ${details.payload}",
+          );
         }
         handleNotificationAction(details.payload, details.actionId);
       },
@@ -280,7 +290,7 @@ class NotificationService {
       }
       return;
     }
-    
+
     // CRITICAL: Use jsonEncode to create a reliable, parsable string from the data map.
     // .toString() is for debugging only and is not a valid data format.
     final payload = jsonEncode(message.data);
@@ -293,7 +303,8 @@ class NotificationService {
         android: AndroidNotificationDetails(
           'high_importance_channel', // This ID MUST match the channel created above.
           'High Importance Notifications',
-          channelDescription: 'This channel is used for important notifications.',
+          channelDescription:
+              'This channel is used for important notifications.',
           importance: Importance.high,
           priority: Priority.high,
           icon: '@mipmap/ic_launcher',
@@ -319,44 +330,79 @@ class NotificationService {
 
   /// This is the single, centralized handler for all notification actions.
   /// It reliably decodes the payload and executes logic based on the actionId.
+  // void handleNotificationAction(String? payload, String? actionId) {
+  //   if (kDebugMode) {
+  //     print("Handling action: '$actionId' with payload: $payload");
+  //   }
+
+  //   // Safely decode the JSON payload.
+  //   Map<String, dynamic> data = {};
+  //   if (payload != null && payload.isNotEmpty) {
+  //     try {
+  //       data = jsonDecode(payload);
+  //     } catch (e) {
+  //       if (kDebugMode) {
+  //         print("Error decoding notification payload: $e");
+  //       }
+  //     }
+  //   }
+
+  //   // Use a switch for clear, readable logic.
+  //   switch (actionId) {
+  //     case 'accept_action':
+  //       if (kDebugMode) {
+  //         print('User tapped Accept. Data: $data');
+  //       }
+  //       // --- YOUR ACCEPT LOGIC HERE ---
+  //       // e.g., make an API call: apiService.acceptInvitation(data['invitationId']);
+  //       break;
+  //     case 'reject_action':
+  //       if (kDebugMode) {
+  //         print('User tapped Reject. Data: $data');
+  //       }
+  //       // --- YOUR REJECT LOGIC HERE ---
+  //       // e.g., make an API call: apiService.rejectInvitation(data['invitationId']);
+  //       break;
+  //     default:
+  //       // This handles a tap on the notification body itself (where actionId is null).
+  //       if (kDebugMode) {
+  //         print('Notification tapped without a specific action. Navigating...');
+  //       }
+  //       _navigateToScreenFromPayload(data);
+  //       break;
+  //   }
+  // }
+
   void handleNotificationAction(String? payload, String? actionId) {
     if (kDebugMode) {
-      print("Handling action: '$actionId' with payload: $payload");
+      print("تم الضغط على الإشعار: '$actionId' مع البيانات: $payload");
     }
 
-    // Safely decode the JSON payload.
     Map<String, dynamic> data = {};
     if (payload != null && payload.isNotEmpty) {
       try {
         data = jsonDecode(payload);
       } catch (e) {
-        if (kDebugMode) {
-          print("Error decoding notification payload: $e");
-        }
+        print("خطأ في فك ترميز البيانات: $e");
       }
     }
 
-    // Use a switch for clear, readable logic.
+    final invitationId = data['invitation_id'];
+
     switch (actionId) {
       case 'accept_action':
-        if (kDebugMode) {
-          print('User tapped Accept. Data: $data');
+        if (invitationId != null) {
+          _apiService.acceptInvitation(invitationId.toString());
         }
-        // --- YOUR ACCEPT LOGIC HERE ---
-        // e.g., make an API call: apiService.acceptInvitation(data['invitationId']);
         break;
+
       case 'reject_action':
-        if (kDebugMode) {
-          print('User tapped Reject. Data: $data');
+        if (invitationId != null) {
+          _apiService.rejectInvitation(invitationId.toString());
         }
-        // --- YOUR REJECT LOGIC HERE ---
-        // e.g., make an API call: apiService.rejectInvitation(data['invitationId']);
         break;
+
       default:
-        // This handles a tap on the notification body itself (where actionId is null).
-        if (kDebugMode) {
-          print('Notification tapped without a specific action. Navigating...');
-        }
         _navigateToScreenFromPayload(data);
         break;
     }
@@ -384,20 +430,20 @@ class NotificationService {
     // 2. For handling a tap on a notification when the app is in the BACKGROUND.
     // Note: This is for taps on the main body, NOT action buttons.
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
-       if (kDebugMode) {
+      if (kDebugMode) {
         print('Notification opened from background.');
       }
       _navigateToScreenFromPayload(message.data);
     });
-    
+
     // 3. For handling a tap on a notification that opened the app from a TERMINATED state.
     _messaging.getInitialMessage().then((message) {
-        if (message != null) {
-            if (kDebugMode) {
-              print('Notification opened from terminated state.');
-            }
-            _navigateToScreenFromPayload(message.data);
+      if (message != null) {
+        if (kDebugMode) {
+          print('Notification opened from terminated state.');
         }
+        _navigateToScreenFromPayload(message.data);
+      }
     });
 
     // 4. Register the top-level background message handler.
@@ -414,11 +460,11 @@ class NotificationService {
     }
     // Also listen for token refreshes and send them to your server.
     _messaging.onTokenRefresh.listen((newToken) {
-        if (kDebugMode) {
-          print("FCM Token refreshed: $newToken");
-        }
-        // TokenModel.fcm = newToken;
-        // TODO: Send the new token to your backend server.
+      if (kDebugMode) {
+        print("FCM Token refreshed: $newToken");
+      }
+      // TokenModel.fcm = newToken;
+      // TODO: Send the new token to your backend server.
     });
   }
 
@@ -429,11 +475,11 @@ class NotificationService {
     // you typically use a GlobalKey<NavigatorState> on your MaterialApp.
     final type = data['type'];
     if (type == 'chat') {
-        final chatId = data['chat_id'];
-        if (kDebugMode) {
-          print("Navigation requested to Chat screen with ID: $chatId");
-        }
-        // Example: navigatorKey.currentState?.pushNamed('/chat', arguments: chatId);
+      final chatId = data['chat_id'];
+      if (kDebugMode) {
+        print("Navigation requested to Chat screen with ID: $chatId");
+      }
+      // Example: navigatorKey.currentState?.pushNamed('/chat', arguments: chatId);
     }
   }
 }
