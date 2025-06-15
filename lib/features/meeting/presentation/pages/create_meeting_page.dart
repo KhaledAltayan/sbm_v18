@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sbm_v18/features/auth/presentation/manager/auth_cubit.dart';
 import 'package:sbm_v18/features/meeting/presentation/manager/meeting_cubit.dart';
 import 'package:sbm_v18/features/meeting/presentation/manager/meeting_state.dart';
 import 'package:sbm_v18/features/meeting/presentation/pages/invite_meet_page.dart';
@@ -30,13 +31,31 @@ class _CreateMeetingPageState extends State<CreateMeetingPage> {
               ),
             );
 
+            // Navigator.pushReplacement(
+            //   context,
+            //   MaterialPageRoute(
+            //     builder: (context2) => BlocProvider.value(
+            //       value: BlocProvider.of<MeetingCubit>(context),
+
+            //       child: InviteMeetPage(meet: state.meet!)),
+            //   ),
+            // );
+
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context2) => BlocProvider.value(
-                  value: BlocProvider.of<MeetingCubit>(context),
-
-                  child: InviteMeetPage(meet: state.meet!)),
+                builder:
+                    (context2) => MultiBlocProvider(
+                      providers: [
+                        BlocProvider.value(
+                          value: BlocProvider.of<MeetingCubit>(context),
+                        ),
+                        // Add other Cubits/Blocs here if needed
+                        BlocProvider(
+                          create:(context) => AuthCubit(),),
+                      ],
+                      child: InviteMeetPage(meet: state.meet!),
+                    ),
               ),
             );
           } else if (state.isFailure == MeetingsIsFailure.addMeet) {
@@ -66,8 +85,7 @@ class _CreateMeetingPageState extends State<CreateMeetingPage> {
                   const Text('Ask to Join'),
                   Switch(
                     value: askToJoin,
-                    onChanged: (value) =>
-                        setState(() => askToJoin = value),
+                    onChanged: (value) => setState(() => askToJoin = value),
                   ),
                 ],
               ),
@@ -79,10 +97,10 @@ class _CreateMeetingPageState extends State<CreateMeetingPage> {
                     final title = _titleController.text.trim();
                     if (title.isNotEmpty) {
                       context.read<MeetingCubit>().createMeeting(
-                            title: title,
-                            startTime: DateTime.now(),
-                            askToJoin: askToJoin,
-                          );
+                        title: title,
+                        startTime: DateTime.now(),
+                        askToJoin: askToJoin,
+                      );
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
@@ -94,7 +112,7 @@ class _CreateMeetingPageState extends State<CreateMeetingPage> {
                   },
                   child: const Text('Create Meeting'),
                 ),
-              )
+              ),
             ],
           ),
         ),

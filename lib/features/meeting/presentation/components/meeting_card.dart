@@ -25,7 +25,7 @@ class MeetingCard extends StatelessWidget {
               style: TextStyle(color: Colors.grey[600]),
             ),
             Text(
-              "Start: ${meeting.startTime}",
+              "Start: ${meeting.createdAt}",
               style: TextStyle(color: Colors.grey[600]),
             ),
 

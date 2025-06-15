@@ -3,6 +3,7 @@ import 'package:sbm_v18/features/auth/data/model/user_information_model.dart';
 
 class AuthState {
   final UserInformationModel? userInfo;
+  final UserInformationModel? searchedUser;
   final Failure? failure;
 
   final AuthIsLoading isLoading;
@@ -11,6 +12,7 @@ class AuthState {
 
   const AuthState({
     this.userInfo,
+    this.searchedUser,
     this.failure,
     this.isLoading = AuthIsLoading.none,
     this.isSuccess = AuthIsSuccess.none,
@@ -19,21 +21,23 @@ class AuthState {
 
   AuthState copyWith({
     UserInformationModel? userInfo,
+    UserInformationModel? searchedUser,
     Failure? failure,
     AuthIsLoading? isLoading,
     AuthIsSuccess? isSuccess,
     AuthIsFailure? isFailure,
   }) {
     return AuthState(
-      userInfo: userInfo ?? this.userInfo,
+      userInfo: userInfo ,
+      searchedUser:searchedUser ,
       failure: failure,
-      isLoading: isLoading ?? this.isLoading,
-      isSuccess: isSuccess ?? this.isSuccess,
-      isFailure: isFailure ?? this.isFailure,
+      isLoading: isLoading ?? AuthIsLoading.none,
+      isSuccess: isSuccess ?? AuthIsSuccess.none,
+      isFailure: isFailure ?? AuthIsFailure.none,
     );
   }
 }
 
-enum AuthIsLoading { none, registering, loggingIn, loggingOut }
-enum AuthIsSuccess { none, registered, loggedIn, loggedOut }
-enum AuthIsFailure { none, registrationFailed, loginFailed, logoutFailed }
+enum AuthIsLoading { none, registering, loggingIn, loggingOut, searchingUser }
+enum AuthIsSuccess { registered, loggedIn, loggedOut, searchSuccess ,none}
+enum AuthIsFailure { registrationFailed, loginFailed, logoutFailed, searchFailed , none}

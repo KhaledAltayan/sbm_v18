@@ -10,6 +10,7 @@ import 'package:sbm_v18/features/auth/presentation/pages/register_page.dart';
 import 'package:sbm_v18/features/home/navigation_page.dart';
 import 'package:sbm_v18/features/meeting/data/data_source/meeting_remote_data_source.dart';
 import 'package:sbm_v18/features/meeting/presentation/manager/meeting_cubit.dart';
+import 'package:sbm_v18/features/meeting/presentation/pages/filter_meeting_page.dart';
 import 'package:sbm_v18/features/meeting/presentation/pages/meeting_page.dart';
 import 'package:sbm_v18/features/meeting/presentation/pages/meeting_page2.dart';
 import 'package:sbm_v18/features/meeting/presentation/pages/meeting_page4.dart';
@@ -93,6 +94,7 @@ class MyApp extends StatelessWidget {
 
       /************************************************************************ */
       home: NavigationPage(),
+      // home: FilterMeetingPage(),
       // home: PusherTestPage(),
     );
   }

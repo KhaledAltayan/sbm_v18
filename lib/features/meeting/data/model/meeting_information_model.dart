@@ -4,6 +4,7 @@ class MeetingInformationModel {
   int creatorId;
   String title;
   DateTime startTime;
+  DateTime createdAt;
   String roomId;
 
   Creator creator;
@@ -12,6 +13,7 @@ class MeetingInformationModel {
 
   MeetingInformationModel({
     required this.id,
+    required this.createdAt,
     required this.askToJoin,
     required this.creatorId,
     required this.title,
@@ -30,6 +32,7 @@ class MeetingInformationModel {
         creatorId: json["creator_id"] ?? -1,
         title: json["title"] ?? "Untitled Meeting",
         startTime: DateTime.tryParse(json["start_time"] ?? "") ?? DateTime(1970, 1, 1),
+         createdAt: DateTime.tryParse(json["created_at"] ?? "") ?? DateTime(1970, 1, 1),
         roomId: json["room_id"] ?? "no_room",
 
         creator: Creator.fromJson(json["creator"] ?? {}),
@@ -48,6 +51,7 @@ class MeetingInformationModel {
     "creator_id": creatorId,
     "title": title,
     "start_time": startTime.toIso8601String(),
+    "created_at": startTime.toIso8601String(),
     "room_id": roomId,
 
     "creator": creator.toJson(),

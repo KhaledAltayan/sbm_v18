@@ -7,7 +7,20 @@ import 'package:sbm_v18/features/meeting/presentation/manager/meeting_state.dart
 class MeetingCubit extends Cubit<MeetingState> {
   final MeetingRemoteDataSource remote = MeetingRemoteDataSource();
 
-  MeetingCubit() : super(MeetingState(meetings: [], allMeetings: []));
+  MeetingCubit() : super(MeetingState(meetings: [], allMeetings: [], allMeetingsByDate: []));
+
+  void getMeetingsByDate(String date) async {
+    emit(state.copyWith(isLoading: MeetingsIsLoading.getMeetingsByDate));
+    final result = await remote.searchMeetingsByDate(date);
+    result.fold(
+      (failure) {
+        emit(state.copyWith(failure: failure));
+      },
+      (meetings) {
+        emit(state.copyWith(allMeetingsByDate: meetings));
+      },
+    );
+  }
 
   Future<void> getMeetings() async {
     emit(state.copyWith(isLoading: MeetingsIsLoading.meetings));

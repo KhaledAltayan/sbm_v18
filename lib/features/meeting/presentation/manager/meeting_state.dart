@@ -4,6 +4,7 @@ import 'package:sbm_v18/features/meeting/data/model/meeting_information_model.da
 class MeetingState {
   final List<MeetingInformationModel> meetings;
   final List<MeetingInformationModel> allMeetings;
+  final List<MeetingInformationModel> allMeetingsByDate;
   final MeetingInformationModel? meet;
 
   final Failure? failure;
@@ -17,6 +18,7 @@ class MeetingState {
   MeetingState({
     required this.allMeetings,
     required this.meetings,
+    required this.allMeetingsByDate,
     this.failure,
     this.meet,
     this.isLoading = MeetingsIsLoading.none,
@@ -28,6 +30,7 @@ class MeetingState {
   MeetingState copyWith({
     List<MeetingInformationModel>? meetings,
     List<MeetingInformationModel>? allMeetings,
+    List<MeetingInformationModel>? allMeetingsByDate,
     Failure? failure,
     MeetingInformationModel? meet,
     MeetingsIsLoading? isLoading,
@@ -39,6 +42,7 @@ class MeetingState {
       allMeetings: allMeetings ?? this.allMeetings,
       meetings: meetings ?? this.meetings,
       failure: failure,
+      allMeetingsByDate: allMeetingsByDate ?? [],
       meet: meet,
       isLoading: isLoading ?? MeetingsIsLoading.none,
       isSuccess: isSuccess ?? MeetingsIsSuccess.none,
@@ -48,8 +52,8 @@ class MeetingState {
   }
 }
 
-enum MeetingsIsLoading { none, meetings, addMeet, uploadRecording }
+enum MeetingsIsLoading { none, meetings, addMeet, uploadRecording ,getMeetingsByDate}
 
-enum MeetingsIsSuccess { addMeet, none, uploadRecording }
+enum MeetingsIsSuccess { addMeet, none, uploadRecording ,getMeetingsByDate}
 
-enum MeetingsIsFailure { addMeet, none, uploadRecording }
+enum MeetingsIsFailure { addMeet, none, uploadRecording ,getMeetingsByDate}

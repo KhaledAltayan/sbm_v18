@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:sbm_v18/features/meeting/presentation/components/meeting_card.dart';
 import 'package:sbm_v18/features/meeting/presentation/manager/meeting_cubit.dart';
 import 'package:sbm_v18/features/meeting/presentation/manager/meeting_state.dart';
+import 'package:sbm_v18/features/meeting/presentation/pages/filter_meeting_page.dart';
+import 'package:sbm_v18/features/meeting/presentation/pages/meeting_detail_page.dart';
 
 class MeetingsPage extends StatefulWidget {
   const MeetingsPage({super.key});
@@ -67,10 +70,20 @@ class _MeetingsPageState extends State<MeetingsPage> {
                       ),
                     ),
                     onPressed: () {
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(builder: (_) => const FilterPage()),
-                      // );
+                      String formattedDate = DateFormat(
+                        'yyyy-MM-dd',
+                      ).format(DateTime.now());
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder:
+                              (context2) => BlocProvider.value(
+                                value: BlocProvider.of<MeetingCubit>(context)
+                                  ..getMeetingsByDate(formattedDate),
+                                child: FilterMeetingPage(),
+                              ),
+                        ),
+                      );
                     },
                   ),
                 ),
@@ -93,7 +106,20 @@ class _MeetingsPageState extends State<MeetingsPage> {
                   itemCount: state.meetings.length,
                   itemBuilder: (context, index) {
                     final meeting = state.meetings[index];
-                    return MeetingCard(meeting: meeting);
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context2) => BlocProvider.value(
+                              
+                              value:  BlocProvider.of<MeetingCubit>(context),
+                              child: MeetingDetailPage(meeting: meeting)),
+                          ),
+                        );
+                      },
+                      child: MeetingCard(meeting: meeting),
+                    );
                   },
                 );
               },

@@ -95,38 +95,64 @@ class MeetingRemoteDataSource {
     }
   }
 
-
-
   Future<Either<Failure, String>> uploadRecording({
-  required int meetingId,
-  required String filePath,
-}) async {
-  addLogger();
-  try {
-    final formData = FormData.fromMap({
-      'meeting_id': meetingId,
-      'file': await MultipartFile.fromFile(filePath, filename: 'record.wav'),
-    });
+    required int meetingId,
+    required String filePath,
+  }) async {
+    addLogger();
+    try {
+      final formData = FormData.fromMap({
+        'meeting_id': meetingId,
+        'file': await MultipartFile.fromFile(filePath, filename: 'record.wav'),
+      });
 
-    final response = await dio.post(
-      ApiUrls.recordMeeting,
-      data: formData,
-      options: Options(
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Accept': 'application/json',
-        },
-      ),
-    );
+      final response = await dio.post(
+        ApiUrls.recordMeeting,
+        data: formData,
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+            'Accept': 'application/json',
+          },
+        ),
+      );
 
-    if (response.statusCode == 200) {
-      return right(response.data['data']['recording_url']);
-    } else {
-      return left(Failure(message: response.data['message']));
+      if (response.statusCode == 200) {
+        return right(response.data['data']['recording_url']);
+      } else {
+        return left(Failure(message: response.data['message']));
+      }
+    } catch (e) {
+      return left(Failure.handleError(e));
     }
-  } catch (e) {
-    return left(Failure.handleError(e));
   }
-}
 
+  Future<Either<Failure, List<MeetingInformationModel>>> searchMeetingsByDate(
+    String date,
+  ) async {
+    addLogger();
+    try {
+      final response = await dio.get(
+        '${ApiUrls.searchMeetings}?date=$date',
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        final data = response.data;
+        final meetings = List<MeetingInformationModel>.from(
+          data['meetings'].map((x) => MeetingInformationModel.fromJson(x)),
+        );
+        return Right(meetings);
+      } else {
+        return Left(Failure(message: response.data['message']));
+      }
+    } catch (e) {
+      return Left(Failure.handleError(e));
+    }
+  }
 }

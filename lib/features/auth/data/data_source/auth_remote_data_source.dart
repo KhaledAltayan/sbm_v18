@@ -7,6 +7,8 @@ import 'package:sbm_v18/core/network/failure.dart';
 import 'package:sbm_v18/features/auth/data/model/user_information_model.dart';
 
 class AuthRemoteDataSource {
+final token = ApiUrls.token;//
+
   final Dio dio = Dio();
 
   AuthRemoteDataSource() {
@@ -58,92 +60,115 @@ class AuthRemoteDataSource {
       final response = await dio.post(
         ApiUrls.register,
         data: formData,
-        options: Options(
-          headers: {
-            'Accept': 'application/json',
-          },
-        ),
+        options: Options(headers: {'Accept': 'application/json'}),
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         final userInfo = UserInformationModel.fromJson(response.data['data']);
         return right(userInfo);
       } else {
-        return left(Failure(
-          statusCode: response.statusCode,
-          message: response.data['message'] ?? 'Registration failed.',
-        ));
+        return left(
+          Failure(
+            statusCode: response.statusCode,
+            message: response.data['message'] ?? 'Registration failed.',
+          ),
+        );
       }
     } catch (e) {
       return left(Failure.handleError(e));
     }
   }
 
-
-
   Future<Either<Failure, UserInformationModel>> login({
-  required String email,
-  required String password,
-  required String fcmToken,
-}) async {
-  try {
-    final response = await dio.post(
-      ApiUrls.login,
-      data: FormData.fromMap({
-        "email": email,
-        "password": password,
-        "fcm_token": fcmToken,
-      }),
-      options: Options(
-        headers: {
-          'Accept': 'application/json',
-        },
-      ),
-    );
+    required String email,
+    required String password,
+    required String fcmToken,
+  }) async {
+    try {
+      final response = await dio.post(
+        ApiUrls.login,
+        data: FormData.fromMap({
+          "email": email,
+          "password": password,
+          "fcm_token": fcmToken,
+        }),
+        options: Options(headers: {'Accept': 'application/json'}),
+      );
 
-    if (response.statusCode == 200 || response.statusCode == 201) {
-      final userInfo = UserInformationModel.fromJson(response.data['data']);
-      return right(userInfo);
-    } else {
-      return left(Failure(
-        statusCode: response.statusCode,
-        message: response.data['message'] ?? 'Login failed.',
-      ));
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final userInfo = UserInformationModel.fromJson(response.data['data']);
+        return right(userInfo);
+      } else {
+        return left(
+          Failure(
+            statusCode: response.statusCode,
+            message: response.data['message'] ?? 'Login failed.',
+          ),
+        );
+      }
+    } catch (e) {
+      return left(Failure.handleError(e));
     }
-  } catch (e) {
-    return left(Failure.handleError(e));
   }
-}
 
+  Future<Either<Failure, String>> logout({required String token}) async {
+    try {
+      final response = await dio.post(
+        ApiUrls.logout,
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        ),
+      );
 
-
-Future<Either<Failure, String>> logout({required String token}) async {
-  try {
-    final response = await dio.post(
-      ApiUrls.logout,
-      options: Options(
-        headers: {
-          'Accept': 'application/json',
-          'Authorization': 'Bearer $token',
-        },
-      ),
-    );
-
-    if (response.statusCode == 200 || response.statusCode == 204) {
-      return right(response.data['message'] ?? 'Logout successful.');
-    } else {
-      return left(Failure(
-        statusCode: response.statusCode,
-        message: response.data['message'] ?? 'Logout failed.',
-      ));
+      if (response.statusCode == 200 || response.statusCode == 204) {
+        return right(response.data['message'] ?? 'Logout successful.');
+      } else {
+        return left(
+          Failure(
+            statusCode: response.statusCode,
+            message: response.data['message'] ?? 'Logout failed.',
+          ),
+        );
+      }
+    } catch (e) {
+      return left(Failure.handleError(e));
     }
-  } catch (e) {
-    return left(Failure.handleError(e));
   }
-}
 
+  Future<Either<Failure, UserInformationModel>> searchUserByEmail({
+    required String email,
+    // required String token,
+  }) async {
+    _addLogger();
+    try {
+      final response = await dio.get(
+        ApiUrls.searchUserByEmail,
+        // "${ApiUrls.searchUserByEmail}?email=$email",
+        queryParameters: {'email': email},
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        ),
+      );
 
-
-
-
+      if (response.statusCode == 200) {
+        final user = UserInformationModel.fromJson(response.data['data']);
+        return right(user);
+      } else {
+        return left(
+          Failure(
+            statusCode: response.statusCode,
+            message: response.data['message'] ?? 'Search failed.',
+          ),
+        );
+      }
+    } catch (e) {
+      return left(Failure.handleError(e));
+    }
+  }
 }

@@ -1,6 +1,7 @@
 class MeetingModel1 {
   String title;
   DateTime startTime;
+  DateTime createdAt;
   String duration;
   String roomId;
   int creatorId;
@@ -13,6 +14,7 @@ class MeetingModel1 {
     required this.roomId,
     required this.creatorId,
     required this.id,
+    required this.createdAt
   });
 
   factory MeetingModel1.fromJson(Map<String, dynamic> json) => MeetingModel1(
@@ -22,6 +24,7 @@ class MeetingModel1 {
     roomId: json["room_id"],
     creatorId: json["creator_id"],
     id: json["id"],
+    createdAt: DateTime.parse(json["created_at"]),
   );
 
   Map<String, dynamic> toJson() => {
