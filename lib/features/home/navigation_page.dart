@@ -3,10 +3,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:sbm_v18/core/style/app_assets.dart';
 import 'package:sbm_v18/core/style/app_color.dart';
+import 'package:sbm_v18/features/meeting/presentation/components/meeting_card.dart';
+import 'package:sbm_v18/features/meeting/presentation/manager/meeting_cubit.dart';
 import 'package:sbm_v18/features/meeting/presentation/manager/meeting_cubit1.dart';
+import 'package:sbm_v18/features/meeting/presentation/pages/meeting_page.dart';
 import 'package:sbm_v18/features/meeting/presentation/pages/meeting_page4.dart';
 import 'package:sbm_v18/features/meeting/presentation/pages/meeting_page5.dart';
-import 'package:sbm_v18/features/meeting/presentation/pages/meeting_page7.dart';
+import 'package:sbm_v18/features/meeting/presentation/pages/create_join_meeting_page.dart';
 
 class NavigationPage extends StatefulWidget {
   const NavigationPage({super.key});
@@ -18,8 +21,10 @@ class NavigationPage extends StatefulWidget {
 class _NavigationPageState extends State<NavigationPage> {
   int _currentIndex = 0;
   List<Widget> body = [
-    MeetingPage5(),
-    BlocProvider(create: (context) => MeetingCubit1(), child: MeetingPage7()),
+    BlocProvider(
+      create:(context) => MeetingCubit()..getMeetings(),
+      child: MeetingsPage()),
+    BlocProvider(create: (context) => MeetingCubit(), child: CreateJoinMeetingPage()),
     MeetingPage4(),
   ];
   @override

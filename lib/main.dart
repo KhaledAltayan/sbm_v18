@@ -53,12 +53,12 @@ class MyApp extends StatelessWidget {
       // home: BlocProvider(
       //   create:
       //       (_) =>
-      //           MeetingCubit(remote: MeetingRemoteDataSource())..getMeetings(),
+      //           MeetingCubit()..getMeetings(),
       //   child: MeetingsPage(),
       // ),
-      //   home: BlocProvider(
-      //     create: (context) => MeetingCubit(remote: MeetingRemoteDataSource()),
-      //     child: MeetingPage2()),
+        // home: BlocProvider(
+        //   create: (context) => MeetingCubit(remote: MeetingRemoteDataSource()),
+        //   child: MeetingPage2()),
       // home: MeetingPage4(),
       // home: MeetingPage5(),
       // home: MeetingPage6(),

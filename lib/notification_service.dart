@@ -1,12 +1,20 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:sbm_v18/core/model/token_model.dart';
-
 
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await NotificationService.instance.setupFlutterNotifications();
   await NotificationService.instance.showNotification(message);
+}
+
+@pragma('vm:entry-point')
+void notificationTapBackground(NotificationResponse details) {
+  NotificationService.instance._handleNotificationAction(
+    details.payload,
+    details.actionId,
+  );
 }
 
 class NotificationService {
@@ -46,7 +54,7 @@ class NotificationService {
     if (_isFlutterLocalNotificationsInitialized) {
       return;
     }
-// android
+    // android
 
     const channel = const AndroidNotificationChannel(
       'high_importance_channel', // id
@@ -57,19 +65,43 @@ class NotificationService {
     );
     await _localNotifications
         .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
+          AndroidFlutterLocalNotificationsPlugin
+        >()
         ?.createNotificationChannel(channel);
 
-    const InitializationSettingsAndroid =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
-    final _InitializationSettings =
-        InitializationSettings(android: InitializationSettingsAndroid);
+    const InitializationSettingsAndroid = AndroidInitializationSettings(
+      '@mipmap/ic_launcher',
+    );
+    final _InitializationSettings = InitializationSettings(
+      android: InitializationSettingsAndroid,
+    );
 
     await _localNotifications.initialize(
       _InitializationSettings,
-      onDidReceiveBackgroundNotificationResponse: (details) {},
+      onDidReceiveNotificationResponse: (NotificationResponse details) {
+        _handleNotificationAction(details.payload, details.actionId);
+      },
+      onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
     );
     _isFlutterLocalNotificationsInitialized = true;
+  }
+
+  void _handleNotificationAction(String? payload, String? actionId) {
+    if (actionId == 'accept_action') {
+      if (kDebugMode) {
+        print('User tapped Accept**********************************');
+      }
+      // TODO: Add accept logic here
+    } else if (actionId == 'reject_action') {
+      if (kDebugMode) {
+        print('User tapped Reject*******************************');
+      }
+      // TODO: Add reject logic here
+    } else {
+      if (kDebugMode) {
+        print('Notification tapped without action');
+      }
+    }
   }
 
   Future<void> showNotification(RemoteMessage message) async {
@@ -80,17 +112,33 @@ class NotificationService {
         notification.hashCode,
         notification.title,
         notification.body,
+
         NotificationDetails(
           android: AndroidNotificationDetails(
-            'high importance channel',
-            'High Importance Notification',
+            'high_importance_channel', // Must match the created channel ID exactly
+            'High Importance Notifications',
             channelDescription:
-                'This channel is used for importance notification.',
+                'This channel is used for important notifications.',
             importance: Importance.high,
             priority: Priority.high,
             icon: '@mipmap/ic_launcher',
+            actions: <AndroidNotificationAction>[
+              AndroidNotificationAction(
+                'accept_action',
+                'Accept',
+                showsUserInterface: true,
+                cancelNotification: true,
+              ),
+              AndroidNotificationAction(
+                'reject_action',
+                'Reject',
+                showsUserInterface: true,
+                cancelNotification: true,
+              ),
+            ],
           ),
         ),
+
         payload: message.data.toString(),
       );
     }

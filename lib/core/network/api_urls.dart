@@ -8,6 +8,8 @@ class ApiUrls {
 
   //Task
   static const String getMeetings = '$_baseUrl/api/meeting/get-meeting';
+  static const String createMeeting = '$_baseUrl/api/meeting/create';
+  static const String recordMeeting  = '$_baseUrl/api/meeting/recording-meeting';
   static const String register = '$_baseUrl/api/auth/register';
   static const String login = '$_baseUrl/api/auth/login';
   static const String logout = '$_baseUrl/api/auth/logout';
@@ -16,5 +18,5 @@ class ApiUrls {
   // static const String register = '$_baseUrl/api/auth/register';
 
   static const String token =
-      '11|jnLMGbP1p4WwjgW10BiLD1uOffT8aoSSgaY5HwD52519af2b';
+      '30|7SdglaiemK2Fm3Svo7EU3bOB0ujo6ed7pGv6ZlFM7df08cd9';
 }
