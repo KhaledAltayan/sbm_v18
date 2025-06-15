@@ -7,7 +7,8 @@ import 'package:sbm_v18/features/meeting/presentation/manager/meeting_state.dart
 class MeetingCubit extends Cubit<MeetingState> {
   final MeetingRemoteDataSource remote = MeetingRemoteDataSource();
 
-  MeetingCubit() : super(MeetingState(meetings: [], allMeetings: [], allMeetingsByDate: []));
+  MeetingCubit()
+    : super(MeetingState(meetings: [], allMeetings: [], allMeetingsByDate: []));
 
   void getMeetingsByDate(String date) async {
     emit(state.copyWith(isLoading: MeetingsIsLoading.getMeetingsByDate));
@@ -122,4 +123,95 @@ class MeetingCubit extends Cubit<MeetingState> {
       ),
     );
   }
+
+  void askToJoin(String roomId) async {
+    emit(state.copyWith(isLoading: MeetingsIsLoading.askToJoin));
+    final result = await remote.askToJoin(roomId: roomId);
+    result.fold(
+      (failure) {
+        emit(
+          state.copyWith(
+            isLoading: MeetingsIsLoading.none,
+            isFailure: MeetingsIsFailure.askToJoin,
+            failure: failure,
+          ),
+        );
+      },
+      (status) {
+        emit(
+          state.copyWith(
+            isLoading: MeetingsIsLoading.none,
+            isSuccess: MeetingsIsSuccess.askToJoin,
+            joinRequestStatus: status,
+          ),
+        );
+      },
+    );
+  }
+
+  void respondToCreatorInvitation({
+    required int invitationId,
+    required String action,
+  }) async {
+    emit(
+      state.copyWith(isLoading: MeetingsIsLoading.respondToCreatorInvitation),
+    );
+
+    final result = await remote.respondToCreatorInvitation(
+      invitationId: invitationId,
+      action: action,
+    );
+
+    result.fold(
+      (failure) {
+        emit(
+          state.copyWith(
+            isLoading: MeetingsIsLoading.none,
+            isFailure: MeetingsIsFailure.respondToCreatorInvitation,
+            failure: failure,
+          ),
+        );
+      },
+      (status) {
+        emit(
+          state.copyWith(
+            isLoading: MeetingsIsLoading.none,
+            isSuccess: MeetingsIsSuccess.respondToCreatorInvitation,
+            joinResponseStatus: status,
+          ),
+        );
+      },
+    );
+  }
+
+
+  void inviteUserByCreator({
+  required int userId,
+  required int meetingId,
+}) async {
+  emit(state.copyWith(isLoading: MeetingsIsLoading.inviteByCreator));
+
+  final result = await remote.inviteUserByCreator(
+    userId: userId,
+    meetingId: meetingId,
+  );
+
+  result.fold(
+    (failure) {
+      emit(state.copyWith(
+        isLoading: MeetingsIsLoading.none,
+        isFailure: MeetingsIsFailure.inviteByCreator,
+        failure: failure,
+      ));
+    },
+    (message) {
+      emit(state.copyWith(
+        isLoading: MeetingsIsLoading.none,
+        isSuccess: MeetingsIsSuccess.inviteByCreator,
+        inviteStatusMessage: message, // Add this to your state model
+      ));
+    },
+  );
+}
+
 }

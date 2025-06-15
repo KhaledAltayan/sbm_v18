@@ -10,10 +10,12 @@ class ApiUrls {
   static const String getMeetings = '$_baseUrl/api/meeting/get-meeting';
   static const String createMeeting = '$_baseUrl/api/meeting/create';
   static const String recordMeeting = '$_baseUrl/api/meeting/recording-meeting';
-  static const String searchUserByEmail = '$_baseUrl/api/auth/search-user-by-email';
-    static const String searchMeetings = '$_baseUrl/api/meeting/search-by-date';
+  static const String searchUserByEmail =
+      '$_baseUrl/api/auth/search-user-by-email';
+  static const String searchMeetings = '$_baseUrl/api/meeting/search-by-date';
+static const String respondToCreatorInvitation = '$_baseUrl/api/invitation/respond-to-join-request';
+static const String inviteByCreator = '$_baseUrl/api/invitation/invite-by-creator';
 
-  
   static const String register = '$_baseUrl/api/auth/register';
   static const String login = '$_baseUrl/api/auth/login';
   static const String logout = '$_baseUrl/api/auth/logout';

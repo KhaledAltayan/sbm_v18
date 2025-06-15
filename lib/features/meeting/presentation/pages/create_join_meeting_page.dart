@@ -8,6 +8,7 @@ import 'package:sbm_v18/features/meeting/presentation/manager/meeting_state.dart
 import 'package:sbm_v18/features/meeting/presentation/pages/create_meeting_page.dart';
 
 import 'package:sbm_v18/features/meeting/presentation/pages/invite_meet_page.dart';
+import 'package:sbm_v18/features/meeting/presentation/pages/join_meeting_page.dart';
 import 'package:sbm_v18/features/meeting/presentation/pages/m1.dart';
 
 class CreateJoinMeetingPage extends StatelessWidget {
@@ -90,18 +91,16 @@ class CreateJoinMeetingPage extends StatelessWidget {
                         ),
                       ),
                       onPressed: () {
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //     builder:
-                        //         (context2) => BlocProvider.value(
-                        //           value: BlocProvider.of<MeetingCubit1>(
-                        //             context,
-                        //           ),
-                        //           child: JoinMeetingPage(),
-                        //         ),
-                        //   ),
-                        // );
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder:
+                                (context2) => BlocProvider.value(
+                                  value: BlocProvider.of<MeetingCubit>(context),
+                                  child:  JoinMeetingPage(),
+                                ),
+                          ),
+                        );
                       },
                       child: const Text(
                         'Join Meet',

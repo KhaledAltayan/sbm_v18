@@ -155,4 +155,98 @@ class MeetingRemoteDataSource {
       return Left(Failure.handleError(e));
     }
   }
+
+  Future<Either<Failure, String>> askToJoin({required String roomId}) async {
+    addLogger();
+    try {
+      final response = await dio.post(
+        ApiUrls.askToJoin,
+        data: {'room_id': roomId},
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        final status = response.data['status'];
+        return Right(status); // "request_to_Join" or "accepted"
+      } else {
+        return Left(
+          Failure(message: response.data['message'] ?? 'Unknown error'),
+        );
+      }
+    } catch (e) {
+      return Left(Failure.handleError(e));
+    }
+  }
+
+  Future<Either<Failure, String>> respondToCreatorInvitation({
+    required int invitationId,
+    required String action, // 'accept' or 'reject'
+  }) async {
+    addLogger();
+
+    try {
+      final response = await dio.post(
+        ApiUrls.respondToCreatorInvitation,
+        data: {'invitation_id': invitationId, 'action': action},
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        final status = response.data['status'];
+        final roomUrl = response.data['room_url'] ?? '';
+        return Right(
+          status == 'accepted' ? roomUrl : 'rejected',
+        ); // You can customize this return value
+      } else {
+        return Left(
+          Failure(message: response.data['message'] ?? 'Unknown error'),
+        );
+      }
+    } catch (e) {
+      return Left(Failure.handleError(e));
+    }
+  }
+
+
+  Future<Either<Failure, String>> inviteUserByCreator({
+  required int userId,
+  required int meetingId,
+}) async {
+  addLogger();
+  try {
+    final response = await dio.post(
+      ApiUrls.inviteByCreator,
+      data: {
+        'user_id': userId,
+        'meeting_id': meetingId,
+      },
+      options: Options(
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      ),
+    );
+
+    if (response.statusCode == 200) {
+      final message = response.data['message'] ?? 'User invited';
+      return Right(message);
+    } else {
+      return Left(Failure(message: response.data['message'] ?? 'Failed to invite user'));
+    }
+  } catch (e) {
+    return Left(Failure.handleError(e));
+  }
+}
+
 }

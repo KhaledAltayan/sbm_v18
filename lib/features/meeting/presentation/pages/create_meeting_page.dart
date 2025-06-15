@@ -31,15 +31,7 @@ class _CreateMeetingPageState extends State<CreateMeetingPage> {
               ),
             );
 
-            // Navigator.pushReplacement(
-            //   context,
-            //   MaterialPageRoute(
-            //     builder: (context2) => BlocProvider.value(
-            //       value: BlocProvider.of<MeetingCubit>(context),
-
-            //       child: InviteMeetPage(meet: state.meet!)),
-            //   ),
-            // );
+        
 
             Navigator.pushReplacement(
               context,

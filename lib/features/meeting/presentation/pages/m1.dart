@@ -4,8 +4,8 @@ import 'package:sbm_v18/features/meeting/presentation/manager/meeting_cubit1.dar
 import 'package:sbm_v18/features/meeting/presentation/manager/meeting_state1.dart';
 
 
-class JoinMeetingPage extends StatelessWidget {
-  JoinMeetingPage({super.key});
+class JoinMeetingPage2 extends StatelessWidget {
+  JoinMeetingPage2({super.key});
 
   final TextEditingController _roomIdController = TextEditingController();
 

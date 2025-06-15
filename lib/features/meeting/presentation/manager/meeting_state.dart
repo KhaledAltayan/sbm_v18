@@ -6,6 +6,9 @@ class MeetingState {
   final List<MeetingInformationModel> allMeetings;
   final List<MeetingInformationModel> allMeetingsByDate;
   final MeetingInformationModel? meet;
+  final String? joinRequestStatus;
+   final String?joinResponseStatus;
+   final String? inviteStatusMessage;
 
   final Failure? failure;
 
@@ -16,10 +19,14 @@ class MeetingState {
   final String? recordingUrl; // ✅ New field
 
   MeetingState({
+    this.inviteStatusMessage,
+    this.joinRequestStatus,
+    this.joinResponseStatus,
     required this.allMeetings,
     required this.meetings,
     required this.allMeetingsByDate,
     this.failure,
+
     this.meet,
     this.isLoading = MeetingsIsLoading.none,
     this.isSuccess = MeetingsIsSuccess.none,
@@ -32,6 +39,10 @@ class MeetingState {
     List<MeetingInformationModel>? allMeetings,
     List<MeetingInformationModel>? allMeetingsByDate,
     Failure? failure,
+    final String? inviteStatusMessage,
+    String? joinRequestStatus,
+     String?joinResponseStatus,
+
     MeetingInformationModel? meet,
     MeetingsIsLoading? isLoading,
     MeetingsIsSuccess? isSuccess,
@@ -44,6 +55,9 @@ class MeetingState {
       failure: failure,
       allMeetingsByDate: allMeetingsByDate ?? [],
       meet: meet,
+      inviteStatusMessage: inviteStatusMessage,
+      joinRequestStatus: joinRequestStatus,
+       joinResponseStatus: joinResponseStatus,
       isLoading: isLoading ?? MeetingsIsLoading.none,
       isSuccess: isSuccess ?? MeetingsIsSuccess.none,
       isFailure: isFailure ?? MeetingsIsFailure.none,
@@ -52,8 +66,33 @@ class MeetingState {
   }
 }
 
-enum MeetingsIsLoading { none, meetings, addMeet, uploadRecording ,getMeetingsByDate}
+enum MeetingsIsLoading {
+  askToJoin,
+  none,
+  meetings,
+  addMeet,
+  uploadRecording,
+  getMeetingsByDate,
+  respondToCreatorInvitation,
+  inviteByCreator
+}
 
-enum MeetingsIsSuccess { addMeet, none, uploadRecording ,getMeetingsByDate}
+enum MeetingsIsSuccess {
+  askToJoin,
+  addMeet,
+  none,
+  uploadRecording,
+  getMeetingsByDate,
+  respondToCreatorInvitation,
+  inviteByCreator
+}
 
-enum MeetingsIsFailure { addMeet, none, uploadRecording ,getMeetingsByDate}
+enum MeetingsIsFailure {
+  askToJoin,
+  addMeet,
+  none,
+  uploadRecording,
+  getMeetingsByDate,
+  respondToCreatorInvitation,
+  inviteByCreator
+}
