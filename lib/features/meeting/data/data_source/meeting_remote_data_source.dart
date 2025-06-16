@@ -217,36 +217,128 @@ class MeetingRemoteDataSource {
     }
   }
 
-
   Future<Either<Failure, String>> inviteUserByCreator({
-  required int userId,
-  required int meetingId,
-}) async {
-  addLogger();
-  try {
-    final response = await dio.post(
-      ApiUrls.inviteByCreator,
-      data: {
-        'user_id': userId,
-        'meeting_id': meetingId,
-      },
-      options: Options(
-        headers: {
-          'Accept': 'application/json',
-          'Authorization': 'Bearer $token',
-        },
-      ),
-    );
+    required int userId,
+    required int meetingId,
+  }) async {
+    addLogger();
+    try {
+      final response = await dio.post(
+        ApiUrls.inviteByCreator,
+        data: {'user_id': userId, 'meeting_id': meetingId},
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        ),
+      );
 
-    if (response.statusCode == 200) {
-      final message = response.data['message'] ?? 'User invited';
-      return Right(message);
-    } else {
-      return Left(Failure(message: response.data['message'] ?? 'Failed to invite user'));
+      if (response.statusCode == 200) {
+        final message = response.data['message'] ?? 'User invited';
+        return Right(message);
+      } else {
+        return Left(
+          Failure(message: response.data['message'] ?? 'Failed to invite user'),
+        );
+      }
+    } catch (e) {
+      return Left(Failure.handleError(e));
     }
-  } catch (e) {
-    return Left(Failure.handleError(e));
   }
-}
 
+  Future<Either<Failure, String>> transcribeMeeting({
+    required int meetingId,
+  }) async {
+    addLogger();
+    try {
+      final response = await dio.post(
+        ApiUrls.transcribeMeeting,
+        data: {'meeting_id': meetingId},
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        final String transcriptionText = response.data['text'];
+        return Right(transcriptionText);
+      } else {
+        return Left(
+          Failure(message: response.data['message'] ?? 'Transcription failed'),
+        );
+      }
+    } catch (e) {
+      return Left(Failure.handleError(e));
+    }
+  }
+
+  Future<Either<Failure, String>> summarizeMeeting({
+    required String query,
+    required String document,
+  }) async {
+    addLogger();
+    try {
+      final response = await dio.post(
+        ApiUrls.summarizeMeeting,
+        data: {'query': query, 'document': document},
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200 && response.data['summary'] != null) {
+        return Right(response.data['summary']);
+      } else {
+        return Left(
+          Failure(message: response.data['message'] ?? 'Summarization failed'),
+        );
+      }
+    } catch (e) {
+      return Left(Failure.handleError(e));
+    }
+  }
+
+  Future<Either<Failure, List<String>>> voiceSeparation({
+    required int meetingId,
+  }) async {
+    addLogger();
+    try {
+      final response = await dio.post(
+        'http://127.0.0.1:8000/api/meeting/voice-separation',
+        data: {'meeting_id': meetingId},
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200 && response.data['transcript'] != null) {
+        final List<dynamic> transcriptData = response.data['transcript'];
+
+        // Extract only non-empty text values
+        final List<String> transcriptTexts =
+            transcriptData
+                .map((item) => item['text']?.toString() ?? '')
+                .where((text) => text.trim().isNotEmpty)
+                .toList();
+
+        return Right(transcriptTexts);
+      } else {
+        return Left(
+          Failure(message: response.data['message'] ?? 'Unknown error'),
+        );
+      }
+    } catch (e) {
+      return Left(Failure.handleError(e));
+    }
+  }
 }

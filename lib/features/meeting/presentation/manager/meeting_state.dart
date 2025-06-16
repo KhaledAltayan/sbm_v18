@@ -7,8 +7,11 @@ class MeetingState {
   final List<MeetingInformationModel> allMeetingsByDate;
   final MeetingInformationModel? meet;
   final String? joinRequestStatus;
-   final String?joinResponseStatus;
-   final String? inviteStatusMessage;
+  final String? joinResponseStatus;
+  final String? inviteStatusMessage;
+  final String? transcribedText;
+  final String? summaryText;
+  final List<String>? transcriptTexts;
 
   final Failure? failure;
 
@@ -19,6 +22,10 @@ class MeetingState {
   final String? recordingUrl; // ✅ New field
 
   MeetingState({
+    this.transcriptTexts,
+
+    this.summaryText,
+    this.transcribedText,
     this.inviteStatusMessage,
     this.joinRequestStatus,
     this.joinResponseStatus,
@@ -38,10 +45,13 @@ class MeetingState {
     List<MeetingInformationModel>? meetings,
     List<MeetingInformationModel>? allMeetings,
     List<MeetingInformationModel>? allMeetingsByDate,
+    final String? summaryText,
     Failure? failure,
+    final List<String>? transcriptTexts,
     final String? inviteStatusMessage,
     String? joinRequestStatus,
-     String?joinResponseStatus,
+    String? joinResponseStatus,
+    final String? transcribedText,
 
     MeetingInformationModel? meet,
     MeetingsIsLoading? isLoading,
@@ -55,9 +65,12 @@ class MeetingState {
       failure: failure,
       allMeetingsByDate: allMeetingsByDate ?? [],
       meet: meet,
+      transcriptTexts: transcriptTexts,
+      summaryText: summaryText,
+      transcribedText: transcribedText,
       inviteStatusMessage: inviteStatusMessage,
       joinRequestStatus: joinRequestStatus,
-       joinResponseStatus: joinResponseStatus,
+      joinResponseStatus: joinResponseStatus,
       isLoading: isLoading ?? MeetingsIsLoading.none,
       isSuccess: isSuccess ?? MeetingsIsSuccess.none,
       isFailure: isFailure ?? MeetingsIsFailure.none,
@@ -74,7 +87,11 @@ enum MeetingsIsLoading {
   uploadRecording,
   getMeetingsByDate,
   respondToCreatorInvitation,
-  inviteByCreator
+  inviteByCreator,
+
+  transcribeRecording,
+  summarizeMeeting,
+  voiceSeparation,
 }
 
 enum MeetingsIsSuccess {
@@ -84,7 +101,10 @@ enum MeetingsIsSuccess {
   uploadRecording,
   getMeetingsByDate,
   respondToCreatorInvitation,
-  inviteByCreator
+  inviteByCreator,
+  transcribeRecording,
+  summarizeMeeting,
+  voiceSeparation,
 }
 
 enum MeetingsIsFailure {
@@ -94,5 +114,8 @@ enum MeetingsIsFailure {
   uploadRecording,
   getMeetingsByDate,
   respondToCreatorInvitation,
-  inviteByCreator
+  inviteByCreator,
+  transcribeRecording,
+  summarizeMeeting,
+  voiceSeparation,
 }

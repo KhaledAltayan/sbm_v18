@@ -184,31 +184,121 @@ class MeetingCubit extends Cubit<MeetingState> {
     );
   }
 
-
   void inviteUserByCreator({
-  required int userId,
-  required int meetingId,
-}) async {
-  emit(state.copyWith(isLoading: MeetingsIsLoading.inviteByCreator));
+    required int userId,
+    required int meetingId,
+  }) async {
+    emit(state.copyWith(isLoading: MeetingsIsLoading.inviteByCreator));
 
-  final result = await remote.inviteUserByCreator(
-    userId: userId,
-    meetingId: meetingId,
-  );
+    final result = await remote.inviteUserByCreator(
+      userId: userId,
+      meetingId: meetingId,
+    );
+
+    result.fold(
+      (failure) {
+        emit(
+          state.copyWith(
+            isLoading: MeetingsIsLoading.none,
+            isFailure: MeetingsIsFailure.inviteByCreator,
+            failure: failure,
+          ),
+        );
+      },
+      (message) {
+        emit(
+          state.copyWith(
+            isLoading: MeetingsIsLoading.none,
+            isSuccess: MeetingsIsSuccess.inviteByCreator,
+            inviteStatusMessage: message, // Add this to your state model
+          ),
+        );
+      },
+    );
+  }
+
+  void transcribeMeeting({required int meetingId}) async {
+    emit(state.copyWith(isLoading: MeetingsIsLoading.transcribeRecording));
+
+    final result = await remote.transcribeMeeting(meetingId: meetingId);
+
+    result.fold(
+      (failure) {
+        emit(
+          state.copyWith(
+            isLoading: MeetingsIsLoading.none,
+            isFailure: MeetingsIsFailure.transcribeRecording,
+            failure: failure,
+          ),
+        );
+      },
+      (transcriptionText) {
+        emit(
+          state.copyWith(
+            isLoading: MeetingsIsLoading.none,
+            isSuccess: MeetingsIsSuccess.transcribeRecording,
+            transcribedText: transcriptionText,
+          ),
+        );
+      },
+    );
+
+    
+  }
+
+  void summarizeMeeting({
+      required String query,
+      required String document,
+    }) async {
+      emit(state.copyWith(isLoading: MeetingsIsLoading.summarizeMeeting));
+
+      final result = await remote.summarizeMeeting(
+        query: query,
+        document: document,
+      );
+
+      result.fold(
+        (failure) {
+          emit(
+            state.copyWith(
+              isLoading: MeetingsIsLoading.none,
+              isFailure: MeetingsIsFailure.summarizeMeeting,
+              failure: failure,
+            ),
+          );
+        },
+        (summaryText) {
+          emit(
+            state.copyWith(
+              isLoading: MeetingsIsLoading.none,
+              isSuccess: MeetingsIsSuccess.summarizeMeeting,
+              summaryText: summaryText,
+            ),
+          );
+        },
+      );
+    }
+
+
+
+    void voiceSeparation({required int meetingId}) async {
+  emit(state.copyWith(isLoading: MeetingsIsLoading.voiceSeparation));
+
+  final result = await remote.voiceSeparation(meetingId: meetingId);
 
   result.fold(
     (failure) {
       emit(state.copyWith(
         isLoading: MeetingsIsLoading.none,
-        isFailure: MeetingsIsFailure.inviteByCreator,
+        isFailure: MeetingsIsFailure.voiceSeparation,
         failure: failure,
       ));
     },
-    (message) {
+    (transcriptList) {
       emit(state.copyWith(
         isLoading: MeetingsIsLoading.none,
-        isSuccess: MeetingsIsSuccess.inviteByCreator,
-        inviteStatusMessage: message, // Add this to your state model
+        isSuccess: MeetingsIsSuccess.voiceSeparation,
+        transcriptTexts: transcriptList,
       ));
     },
   );

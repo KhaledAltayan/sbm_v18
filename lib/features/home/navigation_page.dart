@@ -5,7 +5,7 @@ import 'package:sbm_v18/core/style/app_assets.dart';
 import 'package:sbm_v18/core/style/app_color.dart';
 import 'package:sbm_v18/features/meeting/presentation/components/meeting_card.dart';
 import 'package:sbm_v18/features/meeting/presentation/manager/meeting_cubit.dart';
-import 'package:sbm_v18/features/meeting/presentation/manager/meeting_cubit1.dart';
+
 import 'package:sbm_v18/features/meeting/presentation/pages/meeting_page.dart';
 import 'package:sbm_v18/features/meeting/presentation/pages/meeting_page4.dart';
 import 'package:sbm_v18/features/meeting/presentation/pages/meeting_page5.dart';

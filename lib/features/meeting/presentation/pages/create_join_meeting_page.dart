@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sbm_v18/core/style/app_assets.dart';
 import 'package:sbm_v18/features/meeting/presentation/manager/meeting_cubit.dart';
 
-import 'package:sbm_v18/features/meeting/presentation/manager/meeting_cubit1.dart';
+
 import 'package:sbm_v18/features/meeting/presentation/manager/meeting_state.dart';
 import 'package:sbm_v18/features/meeting/presentation/pages/create_meeting_page.dart';
 

@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jitsi_meet_flutter_sdk/jitsi_meet_flutter_sdk.dart';
-import 'package:sbm_v18/features/meeting/presentation/manager/meeting_cubit.dart';
-import 'package:pusher_channels_flutter/pusher_channels_flutter.dart';
 
 class JoinMeetingPage extends StatefulWidget {
   const JoinMeetingPage({super.key});
@@ -12,109 +9,114 @@ class JoinMeetingPage extends StatefulWidget {
 }
 
 class _JoinMeetingPageState extends State<JoinMeetingPage> {
-  final TextEditingController _codeController = TextEditingController();
-  late PusherChannelsFlutter pusher;
-  bool isWaitingApproval = false;
-  String connectionStatus = 'Disconnected';
+  final TextEditingController _roomController = TextEditingController();
+  final jitsiMeet = JitsiMeet();
 
-  @override
-  void initState() {
-    super.initState();
-    _initPusher();
-  }
-
-  void _initPusher() async {
-    pusher = PusherChannelsFlutter();
-
-    try {
-      await pusher.init(
-        apiKey: '380d95303fac6cdc3cb0',
-        cluster: 'us2',
-        onConnectionStateChange: (currentState, previousState) {
-          setState(() => connectionStatus = currentState.toString());
-        },
-        onEvent: (event) {
-          if (event.eventName == 'meeting-approved') {
-            final room = event.data['room']; // You might need to parse JSON
-            _joinJitsi(room);
-          }
-        },
+  void _joinMeeting() {
+    final roomId = _roomController.text.trim();
+    if (roomId.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please enter a Room ID')),
       );
-
-      await pusher.subscribe(channelName: 'meeting');
-      await pusher.connect();
-    } catch (e) {
-      setState(() => connectionStatus = 'Error: $e');
+      return;
     }
-  }
 
-  void _requestToJoin() {
-    final roomCode = _codeController.text.trim();
-    if (roomCode.isEmpty) return;
-
-    // Notify the server/admin via API or Pusher to request approval
-    // For this example, we assume server triggers an event "meeting-approved"
-
-    setState(() => isWaitingApproval = true);
-    // Simulated: In production, emit event to server with roomCode
-  }
-
-  void _joinJitsi(String room) {
-    final jitsiMeet = JitsiMeet();
     final options = JitsiMeetConferenceOptions(
       serverURL: "https://meet.ffmuc.net/",
-      room: room,
+      room: roomId,
       userInfo: JitsiMeetUserInfo(displayName: "Participant"),
       featureFlags: {
-        FeatureFlags.lobbyModeEnabled: false,
-        FeatureFlags.inviteEnabled: false,
-        FeatureFlags.meetingNameEnabled: true,
+     FeatureFlags.meetingNameEnabled: true,
         FeatureFlags.kickOutEnabled: true,
+        FeatureFlags.videoShareEnabled: false,
+        FeatureFlags.securityOptionEnabled: false,
+        FeatureFlags.meetingPasswordEnabled: false,
+        FeatureFlags.preJoinPageEnabled: false,
+        FeatureFlags.replaceParticipant: false,
+        FeatureFlags.lobbyModeEnabled: false,
+        FeatureFlags.unsafeRoomWarningEnabled: false,
+        FeatureFlags.raiseHandEnabled: true,
+        FeatureFlags.inviteEnabled: false,
+        FeatureFlags.carModeEnabled: false,
+        FeatureFlags.addPeopleEnabled: false,
+        FeatureFlags.speakerStatsEnabled: true,
+        FeatureFlags.recordingEnabled: true,
       },
       configOverrides: {
-        "startWithAudioMuted": false,
+       "startWithAudioMuted": false,
         "startWithVideoMuted": false,
         "disableDeepLinking": true,
         "disableThirdPartyRequests": true,
         "subject": "Smart Business Meeting",
       },
     );
+
     jitsiMeet.join(options);
   }
 
   @override
   void dispose() {
-    pusher.unsubscribe(channelName: 'meeting');
-    pusher.disconnect();
-    _codeController.dispose();
+    _roomController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Join Meeting")),
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: const Text("Join Meeting"),
+        backgroundColor: Colors.blue,
+        foregroundColor: Colors.white,
+        centerTitle: true,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(24.0),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            TextField(
-              controller: _codeController,
-              decoration: const InputDecoration(
-                labelText: "Enter Meeting Code",
-                border: OutlineInputBorder(),
+            const Text(
+              "Enter Room ID to Join",
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.blue,
               ),
             ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _requestToJoin,
-              child: const Text("Request to Join"),
+            const SizedBox(height: 24),
+            TextField(
+              controller: _roomController,
+              decoration: InputDecoration(
+                hintText: 'e.g. room_123456',
+                filled: true,
+                fillColor: Colors.blue.shade50,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(color: Colors.blue),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
             ),
-            const SizedBox(height: 20),
-            if (isWaitingApproval)
-              const CircularProgressIndicator.adaptive(),
-            const SizedBox(height: 10),
-            Text("Connection: $connectionStatus"),
+            const SizedBox(height: 24),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: _joinMeeting,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: const Text(
+                  'Join Now',
+                  style: TextStyle(fontSize: 16, color: Colors.white),
+                ),
+              ),
+            ),
           ],
         ),
       ),

@@ -7,14 +7,14 @@ class ApiService {
 
   
   final Dio _dio = Dio(
-    BaseOptions(
-      baseUrl: ApiUrls.responseUser, // ضع رابط الـ API الخاص بك
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': 'Bearer ${ApiUrls.token}',
-        // 'Authorization': 'Bearer your_token_here', // أضف التوكن إذا كنت تحتاج تسجيل دخول
-      },
-    ),
+    // BaseOptions(
+    //   baseUrl: ApiUrls.responseUser, // ضع رابط الـ API الخاص بك
+    //   headers: {
+    //     'Accept': 'application/json',
+    //     'Authorization': 'Bearer ${ApiUrls.token}',
+    //     // 'Authorization': 'Bearer your_token_here', // أضف التوكن إذا كنت تحتاج تسجيل دخول
+    //   },
+    // ),
   );
 
 
@@ -45,7 +45,13 @@ class ApiService {
   Future<void> acceptInvitation(String invitationId) async {
     addLogger();
     try {
-      final response = await _dio.post('invitations/$invitationId/accept');
+      final response = await _dio.post('http://192.168.225.78:8000/api/invitation/user-respond-creator-invitation',
+      options: Options(headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ${ApiUrls.token}',
+        // 'Authorization': 'Bearer your_token_here', // أضف التوكن إذا كنت تحتاج تسجيل دخول
+      }, )
+      );
       print('تم قبول الدعوة: ${response.data}');
     } catch (e) {
       print('فشل في قبول الدعوة: $e');
