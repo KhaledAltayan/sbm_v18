@@ -106,7 +106,7 @@ class AuthCubit extends Cubit<AuthState> {
   Future<void> logout() async {
     emit(state.copyWith(isLoading: AuthIsLoading.loggingOut));
 
-    final token = state.userInfo?.token;
+    final token = await UserLocalData.getToken();
     if (token == null) {
       emit(
         state.copyWith(
@@ -148,7 +148,6 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   Future<void> searchUserByEmail(String email) async {
-    
     emit(state.copyWith(isLoading: AuthIsLoading.searchingUser));
 
     // final token = state.userInfo?.token;
@@ -163,11 +162,11 @@ class AuthCubit extends Cubit<AuthState> {
     //   return;
     // }
 
-    final result = await remote.searchUserByEmail(email: email,
-    
-    //  token: token
-     
-     );
+    final result = await remote.searchUserByEmail(
+      email: email,
+
+      //  token: token
+    );
 
     result.fold(
       (Failure failure) {

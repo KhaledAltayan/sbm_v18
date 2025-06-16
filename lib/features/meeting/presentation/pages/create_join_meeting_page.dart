@@ -9,7 +9,7 @@ import 'package:sbm_v18/features/meeting/presentation/pages/create_meeting_page.
 
 import 'package:sbm_v18/features/meeting/presentation/pages/invite_meet_page.dart';
 import 'package:sbm_v18/features/meeting/presentation/pages/join_meeting_page.dart';
-import 'package:sbm_v18/features/meeting/presentation/pages/m1.dart';
+
 
 class CreateJoinMeetingPage extends StatelessWidget {
   const CreateJoinMeetingPage({super.key});

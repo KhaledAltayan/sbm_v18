@@ -2,12 +2,13 @@ import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
+import 'package:sbm_v18/core/helpers/user_local_data.dart';
 import 'package:sbm_v18/core/network/api_urls.dart';
 import 'package:sbm_v18/core/network/failure.dart';
 import 'package:sbm_v18/features/auth/data/model/user_information_model.dart';
 
 class AuthRemoteDataSource {
-final token = ApiUrls.token;//
+  // final token = ApiUrls.token; //
 
   final Dio dio = Dio();
 
@@ -144,6 +145,7 @@ final token = ApiUrls.token;//
   }) async {
     _addLogger();
     try {
+        final token = await UserLocalData.getToken();
       final response = await dio.get(
         ApiUrls.searchUserByEmail,
         // "${ApiUrls.searchUserByEmail}?email=$email",

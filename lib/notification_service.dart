@@ -214,7 +214,7 @@ class NotificationService {
   NotificationService._();
   static final NotificationService instance = NotificationService._();
 
-  final ApiService _apiService = ApiService();
+  // final ApiService _apiService = ApiService();
 
   final _messaging = FirebaseMessaging.instance;
   final _localNotifications = FlutterLocalNotificationsPlugin();
@@ -392,13 +392,13 @@ class NotificationService {
     switch (actionId) {
       case 'accept_action':
         if (invitationId != null) {
-          _apiService.acceptInvitation(invitationId.toString());
+          // _apiService.acceptInvitation(invitationId.toString());
         }
         break;
 
       case 'reject_action':
         if (invitationId != null) {
-          _apiService.rejectInvitation(invitationId.toString());
+          // _apiService.rejectInvitation(invitationId.toString());
         }
         break;
 
@@ -453,10 +453,14 @@ class NotificationService {
   Future<void> _getAndPrintFCMToken() async {
     final token = await _messaging.getToken();
     if (token != null) {
+
+
       // TokenModel.fcm = token; // Uncomment when your model is available
     }
     if (kDebugMode) {
       print("FCM Token: $token");
+
+      
     }
     // Also listen for token refreshes and send them to your server.
     _messaging.onTokenRefresh.listen((newToken) {

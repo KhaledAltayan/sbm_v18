@@ -23,15 +23,11 @@ class ApiUrls {
       "$_baseUrl/api/meeting/transcribe-audio-by-id";
 
   static const String summarizeMeeting = "$_baseUrl/api/meeting/summarize";
-  static const String voiceSeparation = '$_baseUrl/api/meeting/voice-separation';
+  static const String voiceSeparation =
+      '$_baseUrl/api/meeting/voice-separation';
 
   static const String register = '$_baseUrl/api/auth/register';
   static const String login = '$_baseUrl/api/auth/login';
   static const String logout = '$_baseUrl/api/auth/logout';
   static const String askToJoin = '$_baseUrl/api/invitation/ask-to-join';
-  // static const String login = '$_baseUrl/api/auth/login';
-  // static const String register = '$_baseUrl/api/auth/register';
-
-  static const String token =
-      '35|pBlol7MClPt4264rcaXAdhGiIDcSWV6ZMxZxdYIof20517c1';
 }

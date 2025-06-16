@@ -15,9 +15,9 @@ class _JoinMeetingPageState extends State<JoinMeetingPage> {
   void _joinMeeting() {
     final roomId = _roomController.text.trim();
     if (roomId.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter a Room ID')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Please enter a Room ID')));
       return;
     }
 
@@ -26,7 +26,7 @@ class _JoinMeetingPageState extends State<JoinMeetingPage> {
       room: roomId,
       userInfo: JitsiMeetUserInfo(displayName: "Participant"),
       featureFlags: {
-     FeatureFlags.meetingNameEnabled: true,
+        FeatureFlags.meetingNameEnabled: true,
         FeatureFlags.kickOutEnabled: true,
         FeatureFlags.videoShareEnabled: false,
         FeatureFlags.securityOptionEnabled: false,
@@ -43,7 +43,7 @@ class _JoinMeetingPageState extends State<JoinMeetingPage> {
         FeatureFlags.recordingEnabled: true,
       },
       configOverrides: {
-       "startWithAudioMuted": false,
+        "startWithAudioMuted": false,
         "startWithVideoMuted": false,
         "disableDeepLinking": true,
         "disableThirdPartyRequests": true,

@@ -2,12 +2,13 @@ import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
+import 'package:sbm_v18/core/helpers/user_local_data.dart';
 import 'package:sbm_v18/core/network/api_urls.dart';
 import 'package:sbm_v18/core/network/failure.dart';
 import 'package:sbm_v18/features/meeting/data/model/meeting_information_model.dart';
 
 class MeetingRemoteDataSource {
-  final token = ApiUrls.token;
+  // final token = ApiUrls.token;
 
   final Dio dio = Dio();
 
@@ -37,6 +38,7 @@ class MeetingRemoteDataSource {
   Future<Either<Failure, List<MeetingInformationModel>>> getMeetings() async {
     addLogger();
     try {
+      final token = await UserLocalData.getToken();
       final response = await dio.get(
         // 'http://192.168.135.245:8000/api/meeting/get-meeting',
         ApiUrls.getMeetings,
@@ -68,6 +70,7 @@ class MeetingRemoteDataSource {
     bool askToJoin = false,
   }) async {
     try {
+      final token = await UserLocalData.getToken();
       final response = await dio.post(
         ApiUrls.createMeeting,
         data: {
@@ -101,6 +104,7 @@ class MeetingRemoteDataSource {
   }) async {
     addLogger();
     try {
+      final token = await UserLocalData.getToken();
       final formData = FormData.fromMap({
         'meeting_id': meetingId,
         'file': await MultipartFile.fromFile(filePath, filename: 'record.wav'),
@@ -132,6 +136,7 @@ class MeetingRemoteDataSource {
   ) async {
     addLogger();
     try {
+      final token = await UserLocalData.getToken();
       final response = await dio.get(
         '${ApiUrls.searchMeetings}?date=$date',
         options: Options(
@@ -159,6 +164,7 @@ class MeetingRemoteDataSource {
   Future<Either<Failure, String>> askToJoin({required String roomId}) async {
     addLogger();
     try {
+      final token = await UserLocalData.getToken();
       final response = await dio.post(
         ApiUrls.askToJoin,
         data: {'room_id': roomId},
@@ -190,6 +196,7 @@ class MeetingRemoteDataSource {
     addLogger();
 
     try {
+      final token = await UserLocalData.getToken();
       final response = await dio.post(
         ApiUrls.respondToCreatorInvitation,
         data: {'invitation_id': invitationId, 'action': action},
@@ -223,6 +230,7 @@ class MeetingRemoteDataSource {
   }) async {
     addLogger();
     try {
+      final token = await UserLocalData.getToken();
       final response = await dio.post(
         ApiUrls.inviteByCreator,
         data: {'user_id': userId, 'meeting_id': meetingId},
@@ -252,6 +260,7 @@ class MeetingRemoteDataSource {
   }) async {
     addLogger();
     try {
+      final token = await UserLocalData.getToken();
       final response = await dio.post(
         ApiUrls.transcribeMeeting,
         data: {'meeting_id': meetingId},
@@ -282,6 +291,7 @@ class MeetingRemoteDataSource {
   }) async {
     addLogger();
     try {
+      final token = await UserLocalData.getToken();
       final response = await dio.post(
         ApiUrls.summarizeMeeting,
         data: {'query': query, 'document': document},
@@ -305,40 +315,41 @@ class MeetingRemoteDataSource {
     }
   }
 
-  Future<Either<Failure, List<String>>> voiceSeparation({
-    required int meetingId,
-  }) async {
-    addLogger();
-    try {
-      final response = await dio.post(
-        'http://127.0.0.1:8000/api/meeting/voice-separation',
-        data: {'meeting_id': meetingId},
-        options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-          },
-        ),
-      );
 
-      if (response.statusCode == 200 && response.data['transcript'] != null) {
-        final List<dynamic> transcriptData = response.data['transcript'];
+Future<Either<Failure, List<String>>> voiceSeparation({
+  required int meetingId,
+}) async {
+  addLogger();
+  try {
+    final token = await UserLocalData.getToken();
+    final response = await dio.post(
+      'http://127.0.0.1:8000/api/meeting/voice-separation',
+      data: {'meeting_id': meetingId},
+      options: Options(
+        headers: {
 
-        // Extract only non-empty text values
-        final List<String> transcriptTexts =
-            transcriptData
-                .map((item) => item['text']?.toString() ?? '')
-                .where((text) => text.trim().isNotEmpty)
-                .toList();
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      ),
+    );
 
-        return Right(transcriptTexts);
-      } else {
-        return Left(
-          Failure(message: response.data['message'] ?? 'Unknown error'),
-        );
-      }
-    } catch (e) {
-      return Left(Failure.handleError(e));
+    if (response.statusCode == 200 && response.data['transcript'] != null) {
+      final List<dynamic> transcriptData = response.data['transcript'];
+
+      // Extract only non-empty text values
+      final List<String> transcriptTexts = transcriptData
+          .map((item) => item['text']?.toString() ?? '')
+          .where((text) => text.trim().isNotEmpty)
+          .toList();
+
+      return Right(transcriptTexts);
+    } else {
+      return Left(Failure(message: response.data['message'] ?? 'Unknown error'));
     }
+  } catch (e) {
+    return Left(Failure.handleError(e));
   }
+}
+
 }

@@ -7,9 +7,9 @@ import 'package:sbm_v18/features/meeting/presentation/components/meeting_card.da
 import 'package:sbm_v18/features/meeting/presentation/manager/meeting_cubit.dart';
 
 import 'package:sbm_v18/features/meeting/presentation/pages/meeting_page.dart';
-import 'package:sbm_v18/features/meeting/presentation/pages/meeting_page4.dart';
-import 'package:sbm_v18/features/meeting/presentation/pages/meeting_page5.dart';
+
 import 'package:sbm_v18/features/meeting/presentation/pages/create_join_meeting_page.dart';
+import 'package:sbm_v18/features/profile/profile_page.dart';
 
 class NavigationPage extends StatefulWidget {
   const NavigationPage({super.key});
@@ -22,10 +22,14 @@ class _NavigationPageState extends State<NavigationPage> {
   int _currentIndex = 0;
   List<Widget> body = [
     BlocProvider(
-      create:(context) => MeetingCubit()..getMeetings(),
-      child: MeetingsPage()),
-    BlocProvider(create: (context) => MeetingCubit(), child: CreateJoinMeetingPage()),
-    MeetingPage4(),
+      create: (context) => MeetingCubit()..getMeetings(),
+      child: MeetingsPage(),
+    ),
+    BlocProvider(
+      create: (context) => MeetingCubit(),
+      child: CreateJoinMeetingPage(),
+    ),
+    ProfilePage(),
   ];
   @override
   Widget build(BuildContext context) {

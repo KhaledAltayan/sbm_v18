@@ -31,19 +31,22 @@ class MeetingInformationModel {
         askToJoin: int.tryParse(json["ask_to_join"]?.toString() ?? '') ?? 0,
         creatorId: json["creator_id"] ?? -1,
         title: json["title"] ?? "Untitled Meeting",
-        startTime: DateTime.tryParse(json["start_time"] ?? "") ?? DateTime(1970, 1, 1),
-         createdAt: DateTime.tryParse(json["created_at"] ?? "") ?? DateTime(1970, 1, 1),
+        startTime:
+            DateTime.tryParse(json["start_time"] ?? "") ?? DateTime(1970, 1, 1),
+        createdAt:
+            DateTime.tryParse(json["created_at"] ?? "") ?? DateTime(1970, 1, 1),
         roomId: json["room_id"] ?? "no_room",
 
         creator: Creator.fromJson(json["creator"] ?? {}),
-        participants: (json["participants"] as List<dynamic>? ?? [])
-            .map((x) => Participant.fromJson(x))
-            .toList(),
-        media: (json["media"] as List<dynamic>? ?? [])
-            .map((x) => Media.fromJson(x))
-            .toList(),
+        participants:
+            (json["participants"] as List<dynamic>? ?? [])
+                .map((x) => Participant.fromJson(x))
+                .toList(),
+        media:
+            (json["media"] as List<dynamic>? ?? [])
+                .map((x) => Media.fromJson(x))
+                .toList(),
       );
-
 
   Map<String, dynamic> toJson() => {
     "id": id,
@@ -86,16 +89,16 @@ class Creator {
   });
 
   factory Creator.fromJson(Map<String, dynamic> json) => Creator(
-        id: json["id"] ?? -1,
-        firstName: json["first_name"] ?? "Unknown",
-        lastName: json["last_name"] ?? "Unknown",
-        birthday: DateTime.tryParse(json["birthday"] ?? "") ?? DateTime(1970, 1, 1),
-        gender: json["gender"] ?? "Not Specified",
-        address: json["address"] ?? "No Address",
-        phoneNumber: json["phone_number"] ?? "No Phone",
-        email: json["email"] ?? "No Email",
-        media: json["media"] ?? "no_image.png",
-      );
+    id: json["id"] ?? -1,
+    firstName: json["first_name"] ?? "Unknown",
+    lastName: json["last_name"] ?? "Unknown",
+    birthday: DateTime.tryParse(json["birthday"] ?? "") ?? DateTime(1970, 1, 1),
+    gender: json["gender"] ?? "Not Specified",
+    address: json["address"] ?? "No Address",
+    phoneNumber: json["phone_number"] ?? "No Phone",
+    email: json["email"] ?? "No Email",
+    media: json["media"] ?? "no_image.png",
+  );
 
   Map<String, dynamic> toJson() => {
     "id": id,
@@ -142,12 +145,13 @@ class Participant {
   });
 
   factory Participant.fromJson(Map<String, dynamic> json) => Participant(
-        id: json["id"] ?? -1,
-        meetingId: json["meeting_id"] ?? -1,
-        userId: json["user_id"] ?? -1,
-        joinedAt: DateTime.tryParse(json["joined_at"] ?? "") ?? DateTime(1970, 1, 1),
-        user: User.fromJson(json["user"] ?? {}),
-      );
+    id: json["id"] ?? -1,
+    meetingId: json["meeting_id"] ?? -1,
+    userId: json["user_id"] ?? -1,
+    joinedAt:
+        DateTime.tryParse(json["joined_at"] ?? "") ?? DateTime(1970, 1, 1),
+    user: User.fromJson(json["user"] ?? {}),
+  );
 
   Map<String, dynamic> toJson() => {
     "id": id,
@@ -174,14 +178,13 @@ class User {
     required this.media,
   });
 
-  
   factory User.fromJson(Map<String, dynamic> json) => User(
-        id: json["id"] ?? -1,
-        firstName: json["first_name"] ?? "Unknown",
-        lastName: json["last_name"] ?? "Unknown",
-        email: json["email"] ?? "No Email",
-        media: json["media"] ?? "no_image.png",
-      );
+    id: json["id"] ?? -1,
+    firstName: json["first_name"] ?? "Unknown",
+    lastName: json["last_name"] ?? "Unknown",
+    email: json["email"] ?? "No Email",
+    media: json["media"] ?? "no_image.png",
+  );
 
   Map<String, dynamic> toJson() => {
     "id": id,
