@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jitsi_meet_flutter_sdk/jitsi_meet_flutter_sdk.dart';
+import 'package:sbm_v18/core/style/app_color.dart';
 
 class JoinMeetingPage extends StatefulWidget {
   const JoinMeetingPage({super.key});
@@ -69,6 +70,10 @@ class _JoinMeetingPageState extends State<JoinMeetingPage> {
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
         centerTitle: true,
+        iconTheme: IconThemeData(color: AppColor.white),
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(bottom: Radius.circular(16)),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(24.0),

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:sbm_v18/core/style/app_assets.dart';
 import 'package:sbm_v18/features/meeting/data/model/meeting_information_model.dart';
 
 class MeetingCard extends StatelessWidget {
@@ -9,10 +11,10 @@ class MeetingCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const primaryColor = Colors.blue;
-    final titleStyle = Theme.of(context)
-        .textTheme
-        .titleMedium!
-        .copyWith(fontWeight: FontWeight.bold, color: primaryColor);
+    final titleStyle = Theme.of(context).textTheme.titleMedium!.copyWith(
+      fontWeight: FontWeight.bold,
+      color: primaryColor,
+    );
 
     return Card(
       elevation: 3,
@@ -32,8 +34,10 @@ class MeetingCard extends StatelessWidget {
               children: [
                 const Icon(Icons.meeting_room, color: primaryColor, size: 18),
                 const SizedBox(width: 6),
-                Text("Room: ${meeting.roomId}",
-                    style: TextStyle(color: Colors.grey[700])),
+                Text(
+                  "Room: ${meeting.roomId}",
+                  style: TextStyle(color: Colors.grey[700]),
+                ),
               ],
             ),
             const SizedBox(height: 4),
@@ -41,8 +45,10 @@ class MeetingCard extends StatelessWidget {
               children: [
                 const Icon(Icons.access_time, color: primaryColor, size: 18),
                 const SizedBox(width: 6),
-                Text("Start: ${meeting.createdAt}",
-                    style: TextStyle(color: Colors.grey[700])),
+                Text(
+                  "Start: ${DateFormat('yyyy-MM-dd (HH:mm)').format(meeting.createdAt)}",
+                  style: TextStyle(color: Colors.grey[700]),
+                ),
               ],
             ),
 
@@ -62,7 +68,7 @@ class MeetingCard extends StatelessWidget {
 
             const SizedBox(height: 12),
 
-            // Participants Chips
+            // Participants Image + Name
             if (meeting.participants.isNotEmpty) ...[
               const Text(
                 "Participants:",
@@ -70,17 +76,30 @@ class MeetingCard extends StatelessWidget {
               ),
               const SizedBox(height: 6),
               Wrap(
-                spacing: 8,
-                runSpacing: -8,
-                children: meeting.participants
-                    .map((p) => Chip(
-                          label: Text("User ${p.userId}"),
-                          backgroundColor: primaryColor.withOpacity(0.1),
-                          labelStyle: const TextStyle(color: Colors.blue),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12)),
-                        ))
-                    .toList(),
+                spacing: 16,
+                runSpacing: 16,
+                children:
+                    meeting.participants.map((p) {
+                      return Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          CircleAvatar(
+                            radius: 24,
+                            backgroundImage:
+                                p.user.media.isNotEmpty
+                                    ? NetworkImage(p.user.media)
+                                    : const AssetImage(AppAssets.avatar)
+                                        as ImageProvider,
+                          ),
+                          const SizedBox(height: 6),
+                          Text(
+                            p.user.firstName,
+                            style: const TextStyle(fontSize: 12),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      );
+                    }).toList(),
               ),
             ],
 
@@ -99,7 +118,9 @@ class MeetingCard extends StatelessWidget {
                   child: Text(
                     m.url,
                     style: const TextStyle(
-                        color: primaryColor, decoration: TextDecoration.underline),
+                      color: primaryColor,
+                      decoration: TextDecoration.underline,
+                    ),
                   ),
                 ),
               ),

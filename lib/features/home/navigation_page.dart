@@ -38,7 +38,10 @@ class _NavigationPageState extends State<NavigationPage> {
       bottomNavigationBar: NavigationBar(
         destinations: [
           NavigationDestination(
-            icon: Icon(Icons.home, color: AppColor.shark),
+            icon: Icon(
+              Icons.home,
+              color: _currentIndex == 0 ? Colors.white : AppColor.shark,
+            ),
             label: 'Home',
           ),
           NavigationDestination(
@@ -47,13 +50,19 @@ class _NavigationPageState extends State<NavigationPage> {
               width: 25,
               child: SvgPicture.asset(
                 AppAssets.meetIcon1,
-                colorFilter: ColorFilter.mode(AppColor.shark, BlendMode.srcIn),
+                colorFilter: ColorFilter.mode(
+                  _currentIndex == 1 ? Colors.white : AppColor.shark,
+                  BlendMode.srcIn,
+                ),
               ),
             ),
             label: 'Meeting',
           ),
           NavigationDestination(
-            icon: Icon(Icons.person, color: AppColor.shark),
+            icon: Icon(
+              Icons.person,
+              color: _currentIndex == 2 ? Colors.white : AppColor.shark,
+            ),
             label: 'Profile',
           ),
         ],
@@ -66,7 +75,7 @@ class _NavigationPageState extends State<NavigationPage> {
         // shadowColor: Colors.purple,
         animationDuration: const Duration(milliseconds: 300),
         // indicatorColor: Color(0xff8E6CEF),
-        indicatorColor: AppColor.blueRibbon,
+        indicatorColor: AppColor.blueColor,
         indicatorShape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
         ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:sbm_v18/core/style/app_color.dart';
 import 'package:sbm_v18/features/meeting/presentation/components/meeting_card.dart';
 import 'package:sbm_v18/features/meeting/presentation/manager/meeting_cubit.dart';
 import 'package:sbm_v18/features/meeting/presentation/manager/meeting_state.dart';
@@ -41,7 +42,12 @@ class _MeetingsPageState extends State<MeetingsPage> {
         title: const Text("Meetings"),
         backgroundColor: primaryColor,
         foregroundColor: Colors.white,
+        centerTitle: true,
         elevation: 1,
+        iconTheme: IconThemeData(color: AppColor.white),
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(bottom: Radius.circular(16)),
+        ),
       ),
       body: Column(
         children: [
@@ -83,16 +89,18 @@ class _MeetingsPageState extends State<MeetingsPage> {
                       padding: const EdgeInsets.symmetric(horizontal: 12),
                     ),
                     onPressed: () {
-                      final formattedDate = DateFormat('yyyy-MM-dd')
-                          .format(DateTime.now());
+                      final formattedDate = DateFormat(
+                        'yyyy-MM-dd',
+                      ).format(DateTime.now());
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context2) => BlocProvider.value(
-                            value: BlocProvider.of<MeetingCubit>(context)
-                              ..getMeetingsByDate(formattedDate),
-                            child: const FilterMeetingPage(),
-                          ),
+                          builder:
+                              (context2) => BlocProvider.value(
+                                value: BlocProvider.of<MeetingCubit>(context)
+                                  ..getMeetingsByDate(formattedDate),
+                                child: const FilterMeetingPage(),
+                              ),
                         ),
                       );
                     },
@@ -132,10 +140,11 @@ class _MeetingsPageState extends State<MeetingsPage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context2) => BlocProvider.value(
-                              value: BlocProvider.of<MeetingCubit>(context),
-                              child: MeetingDetailPage(meeting: meeting),
-                            ),
+                            builder:
+                                (context2) => BlocProvider.value(
+                                  value: BlocProvider.of<MeetingCubit>(context),
+                                  child: MeetingDetailPage(meeting: meeting),
+                                ),
                           ),
                         );
                       },

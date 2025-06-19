@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sbm_v18/core/style/app_color.dart';
 import 'package:sbm_v18/features/auth/presentation/manager/auth_cubit.dart';
 import 'package:sbm_v18/features/meeting/presentation/manager/meeting_cubit.dart';
 import 'package:sbm_v18/features/meeting/presentation/manager/meeting_state.dart';
@@ -28,6 +29,11 @@ class _CreateMeetingPageState extends State<CreateMeetingPage> {
         backgroundColor: primaryColor,
         foregroundColor: Colors.white,
         elevation: 1,
+
+         iconTheme: IconThemeData(color: AppColor.white),
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(bottom: Radius.circular(16)),
+        ),
       ),
       body: BlocListener<MeetingCubit, MeetingState>(
         listener: (context, state) {

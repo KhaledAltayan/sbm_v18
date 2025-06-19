@@ -9,7 +9,6 @@ import 'package:sbm_v18/features/home/navigation_page.dart';
 import 'package:sbm_v18/features/profile/profile_page.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
-
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -81,30 +80,36 @@ class _LoginPageState extends State<LoginPage> {
   void _goToSignUp() {
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context2) =>  BlocProvider.value(
-        value: BlocProvider.of<AuthCubit>(context),
-        child: RegisterPage())),
+      MaterialPageRoute(
+        builder:
+            (context2) => BlocProvider.value(
+              value: BlocProvider.of<AuthCubit>(context),
+              child: RegisterPage(),
+            ),
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final blueColor = Colors.blue.shade700;
-
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text("Login"),
-        backgroundColor: blueColor,
-        elevation: 0,
+        title: Text("Login", style: TextStyle(color: AppColor.white)),
+        backgroundColor: AppColor.blueColor,
+
         centerTitle: true,
+        iconTheme: IconThemeData(color: AppColor.white),
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(bottom: Radius.circular(16)),
+        ),
       ),
       body: BlocConsumer<AuthCubit, AuthState>(
         listener: (context, state) async {
           if (state.isSuccess == AuthIsSuccess.loggedIn) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Login successful')),
-            );
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(const SnackBar(content: Text('Login successful')));
 
             if (state.userInfo != null) {
               await UserLocalData.saveUserInfo(state.userInfo!);
@@ -113,10 +118,11 @@ class _LoginPageState extends State<LoginPage> {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context2) => BlocProvider.value(
-                  value: BlocProvider.of<AuthCubit>(context),
-                  child: NavigationPage(),
-                ),
+                builder:
+                    (context2) => BlocProvider.value(
+                      value: BlocProvider.of<AuthCubit>(context),
+                      child: NavigationPage(),
+                    ),
               ),
             );
           }
@@ -130,18 +136,17 @@ class _LoginPageState extends State<LoginPage> {
         builder: (context, state) {
           return SafeArea(
             child: SingleChildScrollView(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   const SizedBox(height: 20),
-                  Icon(Icons.lock_outline, color: blueColor, size: 72),
+                  Icon(Icons.lock_outline, color: AppColor.blueColor, size: 72),
                   const SizedBox(height: 16),
                   Text(
                     'Welcome Back',
                     style: TextStyle(
-                      color: blueColor,
+                      color: AppColor.blueColor,
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
                     ),
@@ -151,7 +156,7 @@ class _LoginPageState extends State<LoginPage> {
                   Text(
                     'Please login to your account',
                     style: TextStyle(
-                      color: blueColor.withOpacity(0.7),
+                      color: AppColor.blueColor.withOpacity(0.7),
                       fontSize: 16,
                     ),
                     textAlign: TextAlign.center,
@@ -172,15 +177,21 @@ class _LoginPageState extends State<LoginPage> {
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
                               borderSide: BorderSide(
-                                color: blueColor,
+                                color: AppColor.blueColor,
                                 width: 2,
                               ),
                             ),
+                            labelStyle: TextStyle(color: AppColor.blueColor),
                           ),
+
+                          cursorColor: Colors.blue,
+
                           keyboardType: TextInputType.emailAddress,
-                          validator: (val) => val == null || val.isEmpty
-                              ? 'Please enter your email'
-                              : null,
+                          validator:
+                              (val) =>
+                                  val == null || val.isEmpty
+                                      ? 'Please enter your email'
+                                      : null,
                         ),
                         const SizedBox(height: 20),
                         TextFormField(
@@ -194,41 +205,49 @@ class _LoginPageState extends State<LoginPage> {
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
                               borderSide: BorderSide(
-                                color: blueColor,
+                                color: AppColor.blueColor,
                                 width: 2,
                               ),
                             ),
+                            labelStyle: TextStyle(color: AppColor.blueColor),
                           ),
+
+                          cursorColor: Colors.blue,
+
                           obscureText: true,
-                          validator: (val) => val == null || val.isEmpty
-                              ? 'Please enter your password'
-                              : null,
+                          validator:
+                              (val) =>
+                                  val == null || val.isEmpty
+                                      ? 'Please enter your password'
+                                      : null,
                         ),
                         const SizedBox(height: 32),
                         state.isLoading == AuthIsLoading.loggingIn
-                            ? CircularProgressIndicator(color: blueColor)
+                            ? CircularProgressIndicator(
+                              color: AppColor.blueColor,
+                            )
                             : SizedBox(
-                                width: double.infinity,
-                                height: 50,
-                                child: ElevatedButton(
-                                  onPressed: _submit,
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: blueColor,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    elevation: 3,
-                                    textStyle: const TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                              width: double.infinity,
+                              height: 50,
+                              child: ElevatedButton(
+                                onPressed: _submit,
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: AppColor.blueColor,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
                                   ),
-                                  child: Text(
-                                    "Login",
-                                    style: TextStyle(color: AppColor.white),
+                                  elevation: 3,
+                                  textStyle: const TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
+                                child: Text(
+                                  "Login",
+                                  style: TextStyle(color: AppColor.white),
+                                ),
                               ),
+                            ),
                       ],
                     ),
                   ),
@@ -242,7 +261,7 @@ class _LoginPageState extends State<LoginPage> {
                         child: Text(
                           'Sign Up',
                           style: TextStyle(
-                            color: blueColor,
+                            color: AppColor.blueColor,
                             fontWeight: FontWeight.bold,
                             decoration: TextDecoration.underline,
                           ),

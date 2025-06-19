@@ -74,6 +74,25 @@ class _RegisterPageState extends State<RegisterPage> {
     }
   }
 
+  // Future<void> _pickBirthday() async {
+  //   final now = DateTime.now();
+  //   final initialDate =
+  //       _selectedBirthday ?? DateTime(now.year - 20, now.month, now.day);
+
+  //   final picked = await showDatePicker(
+  //     context: context,
+  //     initialDate: initialDate,
+  //     firstDate: DateTime(1900),
+  //     lastDate: now,
+  //   );
+
+  //   if (picked != null) {
+  //     setState(() {
+  //       _selectedBirthday = picked;
+  //     });
+  //   }
+  // }
+
   Future<void> _pickBirthday() async {
     final now = DateTime.now();
     final initialDate =
@@ -84,6 +103,24 @@ class _RegisterPageState extends State<RegisterPage> {
       initialDate: initialDate,
       firstDate: DateTime(1900),
       lastDate: now,
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: ColorScheme.light(
+              primary: Colors.blue, // header background & selected date
+              onPrimary: Colors.white, // text color on selected date
+              onSurface: Colors.black, // default text color
+            ),
+            dialogBackgroundColor: Colors.white,
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.blue, // cancel/ok buttons
+              ),
+            ),
+          ),
+          child: child!,
+        );
+      },
     );
 
     if (picked != null) {
@@ -182,9 +219,13 @@ class _RegisterPageState extends State<RegisterPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Register'),
+        title: Text('Register', style: TextStyle(color: AppColor.white)),
         backgroundColor: _blueColor,
         centerTitle: true,
+        iconTheme: IconThemeData(color: AppColor.white),
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(bottom: Radius.circular(16)),
+        ),
       ),
       body: BlocConsumer<AuthCubit, AuthState>(
         listener: (context, state) async {
@@ -251,7 +292,11 @@ class _RegisterPageState extends State<RegisterPage> {
                     controller: _firstNameController,
                     decoration: inputDecoration.copyWith(
                       labelText: 'First Name',
+                      labelStyle: TextStyle(color: AppColor.blueColor),
                     ),
+
+                    cursorColor: Colors.blue,
+
                     validator:
                         (v) =>
                             v == null || v.isEmpty ? 'Enter first name' : null,
@@ -262,7 +307,11 @@ class _RegisterPageState extends State<RegisterPage> {
                     controller: _lastNameController,
                     decoration: inputDecoration.copyWith(
                       labelText: 'Last Name',
+                      labelStyle: TextStyle(color: AppColor.blueColor),
                     ),
+
+                    cursorColor: Colors.blue,
+
                     validator:
                         (v) =>
                             v == null || v.isEmpty ? 'Enter last name' : null,
@@ -272,7 +321,14 @@ class _RegisterPageState extends State<RegisterPage> {
                   TextFormField(
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
-                    decoration: inputDecoration.copyWith(labelText: 'Email'),
+                    decoration: inputDecoration.copyWith(
+                      labelText: 'Email',
+
+                      labelStyle: TextStyle(color: AppColor.blueColor),
+                    ),
+
+                    cursorColor: Colors.blue,
+
                     validator: (v) {
                       if (v == null || v.isEmpty) return 'Enter email';
                       if (!v.contains('@')) return 'Enter a valid email';
@@ -284,7 +340,14 @@ class _RegisterPageState extends State<RegisterPage> {
                   TextFormField(
                     controller: _passwordController,
                     obscureText: true,
-                    decoration: inputDecoration.copyWith(labelText: 'Password'),
+                    decoration: inputDecoration.copyWith(
+                      labelText: 'Password',
+
+                      labelStyle: TextStyle(color: AppColor.blueColor),
+                    ),
+
+                    cursorColor: Colors.blue,
+
                     validator: (v) {
                       if (v == null || v.isEmpty) return 'Enter password';
                       if (v.length < 6)
@@ -299,7 +362,12 @@ class _RegisterPageState extends State<RegisterPage> {
                     obscureText: true,
                     decoration: inputDecoration.copyWith(
                       labelText: 'Confirm Password',
+
+                      labelStyle: TextStyle(color: AppColor.blueColor),
                     ),
+
+                    cursorColor: Colors.blue,
+
                     validator: (v) {
                       if (v == null || v.isEmpty)
                         return 'Confirm your password';
@@ -312,7 +380,14 @@ class _RegisterPageState extends State<RegisterPage> {
 
                   // Gender dropdown
                   DropdownButtonFormField<String>(
-                    decoration: inputDecoration.copyWith(labelText: 'Gender'),
+                    decoration: inputDecoration.copyWith(
+                      labelText: 'Gender',
+
+                      labelStyle: TextStyle(color: AppColor.blueColor),
+                    ),
+
+                    dropdownColor: Colors.white,
+
                     value: _selectedGender,
                     items: const [
                       DropdownMenuItem(value: 'male', child: Text('Male')),
@@ -343,7 +418,11 @@ class _RegisterPageState extends State<RegisterPage> {
                             Icons.calendar_today,
                             color: _blueColor,
                           ),
+                          labelStyle: TextStyle(color: AppColor.blueColor),
                         ),
+
+                        cursorColor: Colors.blue,
+
                         controller: TextEditingController(
                           text:
                               _selectedBirthday != null
@@ -361,7 +440,11 @@ class _RegisterPageState extends State<RegisterPage> {
                     keyboardType: TextInputType.phone,
                     decoration: inputDecoration.copyWith(
                       labelText: 'Phone Number (optional)',
+
+                      labelStyle: TextStyle(color: AppColor.blueColor),
                     ),
+
+                    cursorColor: Colors.blue,
                   ),
                   const SizedBox(height: 16),
 
@@ -369,7 +452,10 @@ class _RegisterPageState extends State<RegisterPage> {
                     controller: _addressController,
                     decoration: inputDecoration.copyWith(
                       labelText: 'Address (optional)',
+                      labelStyle: TextStyle(color: AppColor.blueColor),
                     ),
+
+                    cursorColor: Colors.blue,
                   ),
                   const SizedBox(height: 32),
 

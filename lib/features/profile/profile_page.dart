@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart'; // ✅ For formatting the birthday
+import 'package:sbm_v18/core/style/app_color.dart';
 import 'package:sbm_v18/features/auth/presentation/manager/auth_cubit.dart';
 import 'package:sbm_v18/features/auth/presentation/manager/auth_state.dart';
 import 'package:sbm_v18/features/onboarding/onboarding_page.dart';
@@ -44,6 +45,7 @@ class ProfilePage extends StatelessWidget {
         return Scaffold(
           backgroundColor: backgroundColor,
           appBar: AppBar(
+            centerTitle: true,
             backgroundColor: primaryColor,
             title: const Text('Profile'),
             foregroundColor: Colors.white,
@@ -55,6 +57,11 @@ class ProfilePage extends StatelessWidget {
                 },
               ),
             ],
+
+            iconTheme: IconThemeData(color: AppColor.white),
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(bottom: Radius.circular(16)),
+            ),
           ),
           body: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
@@ -95,7 +102,12 @@ class ProfilePage extends StatelessWidget {
                 Card(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
+                    side: BorderSide(
+                      color: Colors.blue.shade700,
+                      width: 1.5,
+                    ), // blue border
                   ),
+                  color: Colors.white, // white background
                   elevation: 4,
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
@@ -103,13 +115,12 @@ class ProfilePage extends StatelessWidget {
                       vertical: 16,
                     ),
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         _infoRow("Gender", user.user.gender),
                         _infoRow(
                           "Birthday",
-                          user.user.birthday != null
-                              ? DateFormat.yMMMMd().format(user.user.birthday)
-                              : "Not provided",
+                          DateFormat.yMMMMd().format(user.user.birthday),
                         ),
                         _infoRow("Phone", user.user.phoneNumber),
                         _infoRow("Address", user.user.address),

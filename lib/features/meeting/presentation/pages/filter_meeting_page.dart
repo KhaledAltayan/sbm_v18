@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sbm_v18/core/style/app_color.dart';
 import 'package:sbm_v18/features/meeting/presentation/components/horizontal_date_picker.dart';
 import 'package:sbm_v18/features/meeting/presentation/components/meeting_card.dart';
 import 'package:sbm_v18/features/meeting/presentation/manager/meeting_cubit.dart';
@@ -16,14 +17,13 @@ class FilterMeetingPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Filter Meetings by Date'),
-        backgroundColor: Colors.blue.shade800,
+        title:  Text('Filter Meetings by Date', style: TextStyle(color: AppColor.white),),
+        backgroundColor: AppColor.blueColor,
         elevation: 2,
         centerTitle: true,
+         iconTheme: IconThemeData(color: AppColor.white),
         shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-            bottom: Radius.circular(16),
-          ),
+          borderRadius: BorderRadius.vertical(bottom: Radius.circular(16)),
         ),
       ),
       body: SafeArea(

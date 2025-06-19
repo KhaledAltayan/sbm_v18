@@ -5,6 +5,7 @@ class AppAssets {
   static const String team2 = "assets/images/png/team22.png";
   static const String aiSummarization = "assets/images/png/summarization1.png";
   static const String meeting = "assets/images/png/meeting.jpg";
+   static const String avatar = "assets/images/png/avatar2.png";
 
   //Icons(PNG)
   // static const String message = "assets/icons/png/MessageImage.png";
