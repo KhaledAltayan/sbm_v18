@@ -5,6 +5,7 @@ import 'package:sbm_v18/core/style/app_color.dart';
 import 'package:sbm_v18/features/auth/presentation/manager/auth_cubit.dart';
 import 'package:sbm_v18/features/auth/presentation/manager/auth_state.dart';
 import 'package:sbm_v18/features/auth/presentation/pages/register_page.dart';
+import 'package:sbm_v18/features/home/navigation_page.dart';
 import 'package:sbm_v18/features/profile/profile_page.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
@@ -78,7 +79,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _goToSignUp() {
-    Navigator.push(
+    Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context2) =>  BlocProvider.value(
         value: BlocProvider.of<AuthCubit>(context),
@@ -114,7 +115,7 @@ class _LoginPageState extends State<LoginPage> {
               MaterialPageRoute(
                 builder: (context2) => BlocProvider.value(
                   value: BlocProvider.of<AuthCubit>(context),
-                  child: ProfilePage(),
+                  child: NavigationPage(),
                 ),
               ),
             );

@@ -12,9 +12,10 @@ class MeetingDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeBlue = Colors.blue.shade800;
+
     return BlocConsumer<MeetingCubit, MeetingState>(
       listener: (context, state) {
-        // Transcribe success
         if (state.isSuccess == MeetingsIsSuccess.transcribeRecording) {
           Navigator.push(
             context,
@@ -22,22 +23,16 @@ class MeetingDetailPage extends StatelessWidget {
               builder: (context2) => BlocProvider.value(
                 value: BlocProvider.of<MeetingCubit>(context),
                 child: TranslationPage(
-                  transcribedText: state.transcribedText ?? 'No thing Translate',
+                  transcribedText: state.transcribedText ?? 'No transcription available',
                 ),
               ),
             ),
           );
-        }
-
-        // Transcribe failure
-        else if (state.isFailure == MeetingsIsFailure.transcribeRecording) {
+        } else if (state.isFailure == MeetingsIsFailure.transcribeRecording) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(state.failure!.message)),
           );
-        }
-
-        // Voice separation success
-        else if (state.isSuccess == MeetingsIsSuccess.voiceSeparation) {
+        } else if (state.isSuccess == MeetingsIsSuccess.voiceSeparation) {
           final transcript = state.transcriptTexts ?? [];
           showDialog(
             context: context,
@@ -64,83 +59,139 @@ class MeetingDetailPage extends StatelessWidget {
               ],
             ),
           );
-        }
-
-        // Voice separation failure
-        else if (state.isFailure == MeetingsIsFailure.voiceSeparation) {
+        } else if (state.isFailure == MeetingsIsFailure.voiceSeparation) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(state.failure!.message)),
           );
         }
       },
       builder: (context, state) {
-        // final cubit = context.read<MeetingCubit>();
-
         return Scaffold(
-          appBar: AppBar(title: Text(meeting.title)),
+          backgroundColor: Colors.white,
+          appBar: AppBar(
+            title: Text(meeting.title),
+            backgroundColor: themeBlue,
+            centerTitle: true,
+            elevation: 3,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(bottom: Radius.circular(16)),
+            ),
+          ),
           body: Padding(
             padding: const EdgeInsets.all(16),
             child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("Title: ${meeting.title}", style: const TextStyle(fontSize: 18)),
-                  const SizedBox(height: 12),
-                  Text("Start Time: ${meeting.startTime}", style: const TextStyle(fontSize: 16)),
-                  const SizedBox(height: 12),
-                  Text("Meeting ID: ${meeting.id}", style: const TextStyle(fontSize: 16)),
-                  const SizedBox(height: 12),
-                  Text("Ask to Join: ${meeting.askToJoin == 1 ? "Yes" : "No"}", style: const TextStyle(fontSize: 16)),
-                  const SizedBox(height: 24),
-                  const Text("Media Files:", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 8),
+                  _InfoCard(
+                    title: 'Meeting Info',
+                    children: [
+                      _InfoRow(label: 'Title', value: meeting.title),
+                      _InfoRow(label: 'Start Time', value: meeting.startTime.toLocal().toString()),
+                      _InfoRow(label: 'Meeting ID', value: meeting.id.toString()),
+                      _InfoRow(label: 'Ask to Join', value: meeting.askToJoin == 1 ? 'Yes' : 'No'),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
 
-                  if (meeting.media.isEmpty)
-                    const Text("No recordings available."),
-
-                  ...meeting.media.map(
-                    (media) => Card(
-                      child: ListTile(
-                        title: Text("Recording ${media.id}"),
-                        subtitle: Text(media.url),
-                        trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
+                  _InfoCard(
+                    title: 'Creator',
+                    children: [
+                      ListTile(
+                        contentPadding: EdgeInsets.zero,
+                        leading: CircleAvatar(
+                          radius: 28,
+                          backgroundImage: NetworkImage(meeting.creator.media),
+                          backgroundColor: Colors.blue.shade100,
+                        ),
+                        title: Text(
+                          '${meeting.creator.firstName} ${meeting.creator.lastName}',
+                          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                        ),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // Transcribe button
-                            state.isLoading == MeetingsIsLoading.transcribeRecording
-                                ? const SizedBox(
-                                    height: 20,
-                                    width: 20,
-                                    child: CircularProgressIndicator(strokeWidth: 2),
-                                  )
-                                : IconButton(
-                                    icon: const Icon(Icons.translate),
-                                    tooltip: 'Transcribe',
-                                    onPressed: () {
-                                      context.read<MeetingCubit>().transcribeMeeting(meetingId: meeting.id);
-                                    },
-                                  ),
-
-                            const SizedBox(width: 8),
-
-                            // Voice separation button
-                            state.isLoading == MeetingsIsLoading.voiceSeparation
-                                ? const SizedBox(
-                                    height: 20,
-                                    width: 20,
-                                    child: CircularProgressIndicator(strokeWidth: 2),
-                                  )
-                                : IconButton(
-                                    icon: const Icon(Icons.hearing),
-                                    tooltip: 'Voice Separation',
-                                    onPressed: () {
-                                      context.read<MeetingCubit>().voiceSeparation(meetingId: meeting.id);
-                                    },
-                                  ),
+                            const SizedBox(height: 4),
+                            Text('Email: ${meeting.creator.email}'),
+                            Text('Phone: ${meeting.creator.phoneNumber}'),
+                            Text('Address: ${meeting.creator.address}'),
+                            Text('Birthday: ${meeting.creator.birthday.toLocal().toIso8601String().split("T").first}'),
+                            Text('Gender: ${meeting.creator.gender}'),
                           ],
                         ),
                       ),
-                    ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+
+                  _InfoCard(
+                    title: 'Participants (${meeting.participants.length})',
+                    children: meeting.participants.isEmpty
+                        ? [const Text('No participants')]
+                        : meeting.participants.map((p) {
+                            return ListTile(
+                              contentPadding: EdgeInsets.zero,
+                              leading: CircleAvatar(
+                                backgroundImage: NetworkImage(p.user.media),
+                                backgroundColor: Colors.blue.shade100,
+                              ),
+                              title: Text('${p.user.firstName} ${p.user.lastName}'),
+                              subtitle: Text(p.user.email),
+                            );
+                          }).toList(),
+                  ),
+                  const SizedBox(height: 16),
+
+                  _InfoCard(
+                    title: 'Media Files',
+                    children: meeting.media.isEmpty
+                        ? [const Text("No recordings available.")]
+                        : meeting.media.map(
+                            (media) => Card(
+                              margin: const EdgeInsets.symmetric(vertical: 6),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                              elevation: 3,
+                              shadowColor: Colors.blue.shade100,
+                              child: ListTile(
+                                title: Text("Recording ${media.id}"),
+                                subtitle: Text(media.url, maxLines: 1, overflow: TextOverflow.ellipsis),
+                                trailing: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    if (state.isLoading == MeetingsIsLoading.transcribeRecording)
+                                      const SizedBox(
+                                        height: 20,
+                                        width: 20,
+                                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.blue),
+                                      )
+                                    else
+                                      IconButton(
+                                        icon: Icon(Icons.translate, color: themeBlue),
+                                        tooltip: 'Transcribe',
+                                        onPressed: () {
+                                          context.read<MeetingCubit>().transcribeMeeting(meetingId: meeting.id);
+                                        },
+                                      ),
+                                    const SizedBox(width: 8),
+                                    if (state.isLoading == MeetingsIsLoading.voiceSeparation)
+                                      const SizedBox(
+                                        height: 20,
+                                        width: 20,
+                                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.blue),
+                                      )
+                                    else
+                                      IconButton(
+                                        icon: Icon(Icons.hearing, color: themeBlue),
+                                        tooltip: 'Voice Separation',
+                                        onPressed: () {
+                                          context.read<MeetingCubit>().voiceSeparation(meetingId: meeting.id);
+                                        },
+                                      ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ).toList(),
                   ),
                 ],
               ),
@@ -148,6 +199,84 @@ class MeetingDetailPage extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+}
+
+class _InfoCard extends StatelessWidget {
+  final String title;
+  final List<Widget> children;
+
+  const _InfoCard({required this.title, required this.children});
+
+  @override
+  Widget build(BuildContext context) {
+    final themeBlue = Colors.blue.shade800;
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.blue.shade50,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.blue.shade100.withOpacity(0.5),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: themeBlue,
+            ),
+          ),
+          const SizedBox(height: 12),
+          ...children,
+        ],
+      ),
+    );
+  }
+}
+
+class _InfoRow extends StatelessWidget {
+  final String label;
+  final String value;
+
+  const _InfoRow({required this.label, required this.value});
+
+  @override
+  Widget build(BuildContext context) {
+    final themeBlue = Colors.blue.shade800;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        children: [
+          Text(
+            '$label: ',
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+              color: themeBlue,
+              fontSize: 16,
+            ),
+          ),
+          Expanded(
+            child: Text(
+              value,
+              style: const TextStyle(fontSize: 16),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

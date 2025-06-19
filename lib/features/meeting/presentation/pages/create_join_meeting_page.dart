@@ -28,7 +28,7 @@ class CreateJoinMeetingPage extends StatelessWidget {
               Column(
                 children: [
                   Image.asset(
-                    AppAssets.meeting, // Replace with your image path
+                    AppAssets.team2, // Replace with your image path
                     height: 280,
                     fit: BoxFit.contain,
                   ),

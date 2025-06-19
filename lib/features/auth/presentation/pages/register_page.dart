@@ -7,6 +7,8 @@ import 'package:sbm_v18/core/helpers/user_local_data.dart';
 import 'package:sbm_v18/core/style/app_color.dart';
 import 'package:sbm_v18/features/auth/presentation/manager/auth_cubit.dart';
 import 'package:sbm_v18/features/auth/presentation/manager/auth_state.dart';
+import 'package:sbm_v18/features/auth/presentation/pages/login_page.dart';
+import 'package:sbm_v18/features/home/navigation_page.dart';
 import 'package:sbm_v18/features/profile/profile_page.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
@@ -62,7 +64,9 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   Future<void> _pickImage() async {
-    final XFile? pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    final XFile? pickedFile = await _picker.pickImage(
+      source: ImageSource.gallery,
+    );
     if (pickedFile != null) {
       setState(() {
         _pickedImage = File(pickedFile.path);
@@ -72,7 +76,8 @@ class _RegisterPageState extends State<RegisterPage> {
 
   Future<void> _pickBirthday() async {
     final now = DateTime.now();
-    final initialDate = _selectedBirthday ?? DateTime(now.year - 20, now.month, now.day);
+    final initialDate =
+        _selectedBirthday ?? DateTime(now.year - 20, now.month, now.day);
 
     final picked = await showDatePicker(
       context: context,
@@ -100,7 +105,9 @@ class _RegisterPageState extends State<RegisterPage> {
 
     if (_fcmToken == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('FCM token not available yet, please wait')),
+        const SnackBar(
+          content: Text('FCM token not available yet, please wait'),
+        ),
       );
       return;
     }
@@ -114,20 +121,34 @@ class _RegisterPageState extends State<RegisterPage> {
       password: _passwordController.text.trim(),
       confirmPassword: _confirmPasswordController.text.trim(),
       gender: _selectedGender ?? '',
-      birthday: _selectedBirthday != null ? _selectedBirthday!.toIso8601String().split('T')[0] : '',
+      birthday:
+          _selectedBirthday != null
+              ? _selectedBirthday!.toIso8601String().split('T')[0]
+              : '',
       fcmToken: _fcmToken!,
-      phoneNumber: _phoneNumberController.text.trim().isEmpty
-          ? null
-          : _phoneNumberController.text.trim(),
-      address: _addressController.text.trim().isEmpty
-          ? null
-          : _addressController.text.trim(),
+      phoneNumber:
+          _phoneNumberController.text.trim().isEmpty
+              ? null
+              : _phoneNumberController.text.trim(),
+      address:
+          _addressController.text.trim().isEmpty
+              ? null
+              : _addressController.text.trim(),
       imagePath: _pickedImage?.path,
     );
   }
 
   void _goToSignIn() {
-    Navigator.pop(context); // Assuming SignIn is previous page
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder:
+            (context2) => BlocProvider.value(
+              value: BlocProvider.of<AuthCubit>(context),
+              child: LoginPage(),
+            ),
+      ),
+    ); // Assuming SignIn is previous page
   }
 
   @override
@@ -179,10 +200,11 @@ class _RegisterPageState extends State<RegisterPage> {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context2) => BlocProvider.value(
-                  value: BlocProvider.of<AuthCubit>(context),
-                  child: const ProfilePage(),
-                ),
+                builder:
+                    (context2) => BlocProvider.value(
+                      value: BlocProvider.of<AuthCubit>(context),
+                      child: const NavigationPage(),
+                    ),
               ),
             );
           } else if (state.isFailure == AuthIsFailure.registrationFailed) {
@@ -209,25 +231,41 @@ class _RegisterPageState extends State<RegisterPage> {
                     child: CircleAvatar(
                       radius: 50,
                       backgroundColor: _blueColor.withOpacity(0.1),
-                      backgroundImage: _pickedImage != null ? FileImage(_pickedImage!) : null,
-                      child: _pickedImage == null
-                          ? Icon(Icons.add_a_photo, color: _blueColor, size: 40)
-                          : null,
+                      backgroundImage:
+                          _pickedImage != null
+                              ? FileImage(_pickedImage!)
+                              : null,
+                      child:
+                          _pickedImage == null
+                              ? Icon(
+                                Icons.add_a_photo,
+                                color: _blueColor,
+                                size: 40,
+                              )
+                              : null,
                     ),
                   ),
                   const SizedBox(height: 24),
 
                   TextFormField(
                     controller: _firstNameController,
-                    decoration: inputDecoration.copyWith(labelText: 'First Name'),
-                    validator: (v) => v == null || v.isEmpty ? 'Enter first name' : null,
+                    decoration: inputDecoration.copyWith(
+                      labelText: 'First Name',
+                    ),
+                    validator:
+                        (v) =>
+                            v == null || v.isEmpty ? 'Enter first name' : null,
                   ),
                   const SizedBox(height: 16),
 
                   TextFormField(
                     controller: _lastNameController,
-                    decoration: inputDecoration.copyWith(labelText: 'Last Name'),
-                    validator: (v) => v == null || v.isEmpty ? 'Enter last name' : null,
+                    decoration: inputDecoration.copyWith(
+                      labelText: 'Last Name',
+                    ),
+                    validator:
+                        (v) =>
+                            v == null || v.isEmpty ? 'Enter last name' : null,
                   ),
                   const SizedBox(height: 16),
 
@@ -249,7 +287,8 @@ class _RegisterPageState extends State<RegisterPage> {
                     decoration: inputDecoration.copyWith(labelText: 'Password'),
                     validator: (v) {
                       if (v == null || v.isEmpty) return 'Enter password';
-                      if (v.length < 6) return 'Password must be at least 6 characters';
+                      if (v.length < 6)
+                        return 'Password must be at least 6 characters';
                       return null;
                     },
                   ),
@@ -258,10 +297,14 @@ class _RegisterPageState extends State<RegisterPage> {
                   TextFormField(
                     controller: _confirmPasswordController,
                     obscureText: true,
-                    decoration: inputDecoration.copyWith(labelText: 'Confirm Password'),
+                    decoration: inputDecoration.copyWith(
+                      labelText: 'Confirm Password',
+                    ),
                     validator: (v) {
-                      if (v == null || v.isEmpty) return 'Confirm your password';
-                      if (v != _passwordController.text) return 'Passwords do not match';
+                      if (v == null || v.isEmpty)
+                        return 'Confirm your password';
+                      if (v != _passwordController.text)
+                        return 'Passwords do not match';
                       return null;
                     },
                   ),
@@ -274,14 +317,17 @@ class _RegisterPageState extends State<RegisterPage> {
                     items: const [
                       DropdownMenuItem(value: 'male', child: Text('Male')),
                       DropdownMenuItem(value: 'female', child: Text('Female')),
-                
                     ],
                     onChanged: (val) {
                       setState(() {
                         _selectedGender = val;
                       });
                     },
-                    validator: (v) => v == null || v.isEmpty ? 'Please select gender' : null,
+                    validator:
+                        (v) =>
+                            v == null || v.isEmpty
+                                ? 'Please select gender'
+                                : null,
                   ),
                   const SizedBox(height: 16),
 
@@ -293,12 +339,16 @@ class _RegisterPageState extends State<RegisterPage> {
                         decoration: inputDecoration.copyWith(
                           labelText: 'Birthday',
                           hintText: 'YYYY-MM-DD',
-                          suffixIcon: Icon(Icons.calendar_today, color: _blueColor),
+                          suffixIcon: Icon(
+                            Icons.calendar_today,
+                            color: _blueColor,
+                          ),
                         ),
                         controller: TextEditingController(
-                          text: _selectedBirthday != null
-                              ? "${_selectedBirthday!.year.toString().padLeft(4, '0')}-${_selectedBirthday!.month.toString().padLeft(2, '0')}-${_selectedBirthday!.day.toString().padLeft(2, '0')}"
-                              : '',
+                          text:
+                              _selectedBirthday != null
+                                  ? "${_selectedBirthday!.year.toString().padLeft(4, '0')}-${_selectedBirthday!.month.toString().padLeft(2, '0')}-${_selectedBirthday!.day.toString().padLeft(2, '0')}"
+                                  : '',
                         ),
                         validator: (v) => _validateBirthday(),
                       ),
@@ -309,13 +359,17 @@ class _RegisterPageState extends State<RegisterPage> {
                   TextFormField(
                     controller: _phoneNumberController,
                     keyboardType: TextInputType.phone,
-                    decoration: inputDecoration.copyWith(labelText: 'Phone Number (optional)'),
+                    decoration: inputDecoration.copyWith(
+                      labelText: 'Phone Number (optional)',
+                    ),
                   ),
                   const SizedBox(height: 16),
 
                   TextFormField(
                     controller: _addressController,
-                    decoration: inputDecoration.copyWith(labelText: 'Address (optional)'),
+                    decoration: inputDecoration.copyWith(
+                      labelText: 'Address (optional)',
+                    ),
                   ),
                   const SizedBox(height: 32),
 
@@ -329,9 +383,15 @@ class _RegisterPageState extends State<RegisterPage> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        textStyle: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                      child:  Text('Register', style: TextStyle(color: AppColor.white),),
+                      child: Text(
+                        'Register',
+                        style: TextStyle(color: AppColor.white),
+                      ),
                     ),
                   ),
 
@@ -351,7 +411,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             decoration: TextDecoration.underline,
                           ),
                         ),
-                      )
+                      ),
                     ],
                   ),
                   const SizedBox(height: 12),

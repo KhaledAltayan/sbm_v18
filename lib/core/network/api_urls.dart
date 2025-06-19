@@ -1,5 +1,5 @@
 class ApiUrls {
-  static const String _baseUrl = 'http://192.168.1.104:8000';
+  static const String _baseUrl = 'http://192.168.25.35:8000';
 
   // Auth
 

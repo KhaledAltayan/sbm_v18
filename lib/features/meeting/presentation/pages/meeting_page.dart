@@ -21,7 +21,7 @@ class _MeetingsPageState extends State<MeetingsPage> {
   void initState() {
     super.initState();
     _searchController = TextEditingController();
-    context.read<MeetingCubit>().getMeetings(); // Fetch on open
+    context.read<MeetingCubit>().getMeetings(); // Fetch meetings on open
   }
 
   @override
@@ -32,23 +32,35 @@ class _MeetingsPageState extends State<MeetingsPage> {
 
   @override
   Widget build(BuildContext context) {
+    const primaryColor = Colors.blue;
+    const backgroundColor = Colors.white;
+
     return Scaffold(
-      appBar: AppBar(title: const Text("Meetings")),
+      backgroundColor: backgroundColor,
+      appBar: AppBar(
+        title: const Text("Meetings"),
+        backgroundColor: primaryColor,
+        foregroundColor: Colors.white,
+        elevation: 1,
+      ),
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.fromLTRB(16, 20, 16, 10),
             child: Row(
               children: [
-                // Search Field (Expanded)
                 Expanded(
                   child: TextField(
                     controller: _searchController,
                     decoration: InputDecoration(
                       hintText: "Search by meeting name...",
                       prefixIcon: const Icon(Icons.search),
+                      filled: true,
+                      fillColor: Colors.grey.shade100,
+                      contentPadding: const EdgeInsets.symmetric(vertical: 0),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
                       ),
                     ),
                     onChanged: (value) {
@@ -56,32 +68,31 @@ class _MeetingsPageState extends State<MeetingsPage> {
                     },
                   ),
                 ),
-                const SizedBox(width: 8),
-
-                // Filter Button
+                const SizedBox(width: 10),
                 SizedBox(
                   height: 48,
                   child: ElevatedButton.icon(
-                    icon: const Icon(Icons.filter_list),
+                    icon: const Icon(Icons.filter_list, size: 20),
                     label: const Text("Filter"),
                     style: ElevatedButton.styleFrom(
+                      backgroundColor: primaryColor,
+                      foregroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
                     ),
                     onPressed: () {
-                      String formattedDate = DateFormat(
-                        'yyyy-MM-dd',
-                      ).format(DateTime.now());
+                      final formattedDate = DateFormat('yyyy-MM-dd')
+                          .format(DateTime.now());
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder:
-                              (context2) => BlocProvider.value(
-                                value: BlocProvider.of<MeetingCubit>(context)
-                                  ..getMeetingsByDate(formattedDate),
-                                child: FilterMeetingPage(),
-                              ),
+                          builder: (context2) => BlocProvider.value(
+                            value: BlocProvider.of<MeetingCubit>(context)
+                              ..getMeetingsByDate(formattedDate),
+                            child: const FilterMeetingPage(),
+                          ),
                         ),
                       );
                     },
@@ -90,6 +101,7 @@ class _MeetingsPageState extends State<MeetingsPage> {
               ],
             ),
           ),
+          const SizedBox(height: 10),
           Expanded(
             child: BlocBuilder<MeetingCubit, MeetingState>(
               builder: (context, state) {
@@ -98,11 +110,20 @@ class _MeetingsPageState extends State<MeetingsPage> {
                 }
 
                 if (state.meetings.isEmpty) {
-                  return const Center(child: Text("No meetings found."));
+                  return const Center(
+                    child: Text(
+                      "No meetings found.",
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.grey,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  );
                 }
 
                 return ListView.builder(
-                  padding: const EdgeInsets.all(12),
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
                   itemCount: state.meetings.length,
                   itemBuilder: (context, index) {
                     final meeting = state.meetings[index];
@@ -112,13 +133,16 @@ class _MeetingsPageState extends State<MeetingsPage> {
                           context,
                           MaterialPageRoute(
                             builder: (context2) => BlocProvider.value(
-                              
-                              value:  BlocProvider.of<MeetingCubit>(context),
-                              child: MeetingDetailPage(meeting: meeting)),
+                              value: BlocProvider.of<MeetingCubit>(context),
+                              child: MeetingDetailPage(meeting: meeting),
+                            ),
                           ),
                         );
                       },
-                      child: MeetingCard(meeting: meeting),
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 12),
+                        child: MeetingCard(meeting: meeting),
+                      ),
                     );
                   },
                 );

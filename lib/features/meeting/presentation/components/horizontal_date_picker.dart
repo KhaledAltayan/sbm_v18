@@ -98,8 +98,8 @@ class HorizontalDatePickerState extends State<HorizontalDatePicker> {
       selectedGranularity == "Year"
           ? DateFormat('yyyy').format(date)
           : selectedGranularity == "Month"
-          ? DateFormat('yyyy-MM').format(date)
-          : DateFormat('yyyy-MM-dd').format(date),
+              ? DateFormat('yyyy-MM').format(date)
+              : DateFormat('yyyy-MM-dd').format(date),
     );
   }
 
@@ -142,30 +142,6 @@ class HorizontalDatePickerState extends State<HorizontalDatePicker> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SizedBox(height: 20),
-        // Selection Granularity Options
-
-        // DropdownButton<String>(
-        //   dropdownColor: Colors.blue,
-        //   borderRadius: BorderRadius.circular(16),
-        //   focusColor: Colors.blue,
-
-        //   value: selectedGranularity,
-        //   items: const [
-        //     DropdownMenuItem(value: "Year", child: Text("Year",)),
-        //     DropdownMenuItem(value: "Month", child: Text("Month")),
-        //     DropdownMenuItem(value: "Date", child: Text("Date")),
-        //   ],
-        //   onChanged: (value) {
-        //     if (value != null) {
-        //       setState(() {
-        //         selectedGranularity = value;
-        //       });
-        //       _scrollToDate(selectedDate, center: true);
-        //     }
-        //   },
-        // ),
-
-        // SizedBox(height: 16,),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -179,7 +155,7 @@ class HorizontalDatePickerState extends State<HorizontalDatePicker> {
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
-                  color: AppColor.blueRibbon,
+                  color: Colors.blue.shade800,
                 ),
               ),
             ),
@@ -195,10 +171,10 @@ class HorizontalDatePickerState extends State<HorizontalDatePicker> {
                     return Theme(
                       data: Theme.of(context).copyWith(
                         colorScheme: ColorScheme.light(
-                          primary: AppColor.woodSmoke,
-                          onPrimary: AppColor.blueRibbon,
-                          onSurface: AppColor.blueRibbon,
-                          surface: AppColor.iron,
+                          primary: Colors.blue.shade700,
+                          onPrimary: Colors.white,
+                          onSurface: Colors.blue.shade800,
+                          surface: Colors.white,
                         ),
                       ),
                       child: child!,
@@ -216,14 +192,13 @@ class HorizontalDatePickerState extends State<HorizontalDatePicker> {
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
-                  color: AppColor.blueRibbon,
+                  color: Colors.blue.shade800,
                 ),
               ),
             ),
           ],
         ),
         const SizedBox(height: 20),
-        // Horizontal List for Years/Months/Dates
         SizedBox(
           height: 100,
           child: ListView.builder(
@@ -243,10 +218,12 @@ class HorizontalDatePickerState extends State<HorizontalDatePicker> {
                   width: selectedGranularity == "Year" ? 100 : 60,
                   margin: const EdgeInsets.symmetric(horizontal: 6),
                   decoration: BoxDecoration(
-                    color:
-                        isSelected ? AppColor.scarpaFlow : AppColor.woodSmoke,
+                    color: isSelected ? Colors.blue.shade700 : Colors.white,
                     borderRadius: BorderRadius.circular(22),
-                    border: Border.all(width: 2),
+                    border: Border.all(
+                      color: isSelected ? Colors.blue.shade900 : Colors.blue.shade300,
+                      width: 2,
+                    ),
                   ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -256,7 +233,7 @@ class HorizontalDatePickerState extends State<HorizontalDatePicker> {
                           DateFormat.E().format(itemDate).toUpperCase(),
                           style: TextStyle(
                             fontSize: 12,
-                            color: AppColor.blueRibbon,
+                            color: Colors.blue.shade800,
                           ),
                         ),
                         const SizedBox(height: 4),
@@ -265,7 +242,7 @@ class HorizontalDatePickerState extends State<HorizontalDatePicker> {
                           style: TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
-                            color: AppColor.blueRibbon,
+                            color: Colors.blue.shade800,
                           ),
                         ),
                         const SizedBox(height: 4),
@@ -273,7 +250,7 @@ class HorizontalDatePickerState extends State<HorizontalDatePicker> {
                           DateFormat.MMM().format(itemDate).toUpperCase(),
                           style: TextStyle(
                             fontSize: 12,
-                            color: AppColor.blueRibbon,
+                            color: Colors.blue.shade800,
                           ),
                         ),
                       ] else if (selectedGranularity == "Month") ...[
@@ -282,7 +259,7 @@ class HorizontalDatePickerState extends State<HorizontalDatePicker> {
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
-                            color: AppColor.blueRibbon,
+                            color: Colors.blue.shade800,
                           ),
                         ),
                         const SizedBox(height: 4),
@@ -290,7 +267,7 @@ class HorizontalDatePickerState extends State<HorizontalDatePicker> {
                           DateFormat.y().format(itemDate),
                           style: TextStyle(
                             fontSize: 12,
-                            color: AppColor.blueRibbon,
+                            color: Colors.blue.shade800,
                           ),
                         ),
                       ] else if (selectedGranularity == "Year") ...[
@@ -299,7 +276,7 @@ class HorizontalDatePickerState extends State<HorizontalDatePicker> {
                           style: TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
-                            color: AppColor.blueRibbon,
+                            color: Colors.blue.shade800,
                           ),
                         ),
                       ],
@@ -311,7 +288,6 @@ class HorizontalDatePickerState extends State<HorizontalDatePicker> {
           ),
         ),
         const SizedBox(height: 16),
-        // Display Selected Date
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -319,78 +295,67 @@ class HorizontalDatePickerState extends State<HorizontalDatePicker> {
               "${widget.partName} due on: ${DateFormat(selectedGranularity == "Year"
                   ? 'yyyy'
                   : selectedGranularity == "Month"
-                  ? 'yyyy-MM'
-                  : 'dd/MM/yyyy').format(selectedDate)}",
+                      ? 'yyyy-MM'
+                      : 'dd/MM/yyyy').format(selectedDate)}",
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
-                color: AppColor.blueRibbon,
+                color: Colors.blue.shade800,
               ),
             ),
             Container(
               decoration: BoxDecoration(
-                color:
-                    AppColor
-                        .woodSmoke, // Background color for the dropdown button
-                borderRadius: BorderRadius.circular(
-                  16,
-                ), // Optional rounded corners
+                color: Colors.blue.shade800,
+                borderRadius: BorderRadius.circular(16),
               ),
-              padding: const EdgeInsets.symmetric(
-                horizontal: 12,
-                vertical: 4,
-              ), // Add padding for a better look
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
               child: DropdownButton<String>(
-                dropdownColor:
-                    AppColor
-                        .woodSmoke, // Background color for the dropdown menu
-                borderRadius: BorderRadius.circular(
-                  16,
-                ), // Rounded corners for dropdown menu
-                focusColor:
-                    Colors.blue, // Focus color when the dropdown is highlighted
+                dropdownColor: Colors.blue.shade800,
+                borderRadius: BorderRadius.circular(16),
+                focusColor: Colors.blue.shade900,
                 value: selectedGranularity,
                 icon: const Icon(
                   Icons.arrow_drop_down,
                   color: Colors.white,
-                ), // Custom dropdown icon color
-                style: const TextStyle(
-                  color: Colors.white,
-                ), // Text color inside the dropdown button
-                underline: Container(), // Removes the underline
+                ),
+                style: const TextStyle(color: Colors.white),
+                underline: Container(),
                 items: const [
                   DropdownMenuItem(
                     value: "Year",
-                    child: Text(
-                      "Year",
-                      style: TextStyle(color: Colors.white),
-                    ), // Text color for each item
+                    child: Text("Year"),
                   ),
                   DropdownMenuItem(
                     value: "Month",
-                    child: Text(
-                      "Month",
-                      style: TextStyle(color: Colors.white),
-                    ), // Text color
+                    child: Text("Month"),
                   ),
                   DropdownMenuItem(
                     value: "Date",
-                    child: Text(
-                      "Date",
-                      style: TextStyle(color: Colors.white),
-                    ), // Text color
+                    child: Text("Date"),
                   ),
                 ],
                 onChanged: (value) {
                   if (value != null) {
                     setState(() {
                       selectedGranularity = value;
+
+                      if (value == "Year") {
+                        // Reset selectedDate to current year Jan 1st
+                        selectedDate = DateTime(selectedDate.year);
+                        _scrollToDate(selectedDate, center: true);
+                      } else if (value == "Month") {
+                        selectedDate = DateTime(selectedDate.year, selectedDate.month);
+                        _scrollToDate(selectedDate, center: true);
+                      } else {
+                        _setInitialMonth(selectedDate);
+                        _scrollToDate(selectedDate, center: true);
+                      }
                     });
-                    _scrollToDate(selectedDate, center: true);
+                    widget.onDateSelected(_formatDate(selectedDate));
                   }
                 },
               ),
-            ),
+            )
           ],
         ),
       ],

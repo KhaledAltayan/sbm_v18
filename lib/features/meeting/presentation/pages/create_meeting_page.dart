@@ -18,8 +18,17 @@ class _CreateMeetingPageState extends State<CreateMeetingPage> {
 
   @override
   Widget build(BuildContext context) {
+    const primaryColor = Colors.blue;
+    const backgroundColor = Colors.white;
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Create New Meeting')),
+      backgroundColor: backgroundColor,
+      appBar: AppBar(
+        title: const Text('Create New Meeting'),
+        backgroundColor: primaryColor,
+        foregroundColor: Colors.white,
+        elevation: 1,
+      ),
       body: BlocListener<MeetingCubit, MeetingState>(
         listener: (context, state) {
           if (state.isSuccess == MeetingsIsSuccess.addMeet &&
@@ -31,23 +40,18 @@ class _CreateMeetingPageState extends State<CreateMeetingPage> {
               ),
             );
 
-        
-
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder:
-                    (context2) => MultiBlocProvider(
-                      providers: [
-                        BlocProvider.value(
-                          value: BlocProvider.of<MeetingCubit>(context),
-                        ),
-                        // Add other Cubits/Blocs here if needed
-                        BlocProvider(
-                          create:(context) => AuthCubit(),),
-                      ],
-                      child: InviteMeetPage(meet: state.meet!),
+                builder: (context2) => MultiBlocProvider(
+                  providers: [
+                    BlocProvider.value(
+                      value: BlocProvider.of<MeetingCubit>(context),
                     ),
+                    BlocProvider(create: (context) => AuthCubit()),
+                  ],
+                  child: InviteMeetPage(meet: state.meet!),
+                ),
               ),
             );
           } else if (state.isFailure == MeetingsIsFailure.addMeet) {
@@ -59,40 +63,62 @@ class _CreateMeetingPageState extends State<CreateMeetingPage> {
             );
           }
         },
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(24),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              const Text(
+                "Meeting Title",
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(height: 8),
               TextField(
                 controller: _titleController,
-                decoration: const InputDecoration(
-                  labelText: 'Meeting Title',
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  hintText: 'Enter title here',
+                  filled: true,
+                  fillColor: Colors.grey.shade100,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: Colors.grey.shade300),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: const BorderSide(color: primaryColor, width: 1.5),
+                  ),
                 ),
               ),
               const SizedBox(height: 24),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text('Ask to Join'),
+                  const Text(
+                    'Require Participants to Ask to Join',
+                    style: TextStyle(fontSize: 12),
+                  ),
                   Switch(
                     value: askToJoin,
-                    onChanged: (value) => setState(() => askToJoin = value),
+                    activeColor: primaryColor,
+                    onChanged: (value) {
+                      setState(() => askToJoin = value);
+                    },
                   ),
                 ],
               ),
-              const Spacer(),
+              const SizedBox(height: 32),
               SizedBox(
                 width: double.infinity,
-                child: ElevatedButton(
+                child: ElevatedButton.icon(
+                  icon: const Icon(Icons.video_call),
                   onPressed: () {
                     final title = _titleController.text.trim();
                     if (title.isNotEmpty) {
                       context.read<MeetingCubit>().createMeeting(
-                        title: title,
-                        startTime: DateTime.now(),
-                        askToJoin: askToJoin,
-                      );
+                            title: title,
+                            startTime: DateTime.now(),
+                            askToJoin: askToJoin,
+                          );
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
@@ -102,7 +128,19 @@ class _CreateMeetingPageState extends State<CreateMeetingPage> {
                       );
                     }
                   },
-                  child: const Text('Create Meeting'),
+                  label: const Text(
+                    "Create Meeting",
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: primaryColor,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    elevation: 2,
+                  ),
                 ),
               ),
             ],
