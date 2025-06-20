@@ -281,27 +281,27 @@ class MeetingCubit extends Cubit<MeetingState> {
 
 
 
-    void voiceSeparation({required int meetingId}) async {
-  emit(state.copyWith(isLoading: MeetingsIsLoading.voiceSeparation));
+//     void voiceSeparation({required int meetingId}) async {
+//   emit(state.copyWith(isLoading: MeetingsIsLoading.voiceSeparation));
 
-  final result = await remote.voiceSeparation(meetingId: meetingId);
+//   final result = await remote.voiceSeparation(meetingId: meetingId);
 
-  result.fold(
-    (failure) {
-      emit(state.copyWith(
-        isLoading: MeetingsIsLoading.none,
-        isFailure: MeetingsIsFailure.voiceSeparation,
-        failure: failure,
-      ));
-    },
-    (transcriptList) {
-      emit(state.copyWith(
-        isLoading: MeetingsIsLoading.none,
-        isSuccess: MeetingsIsSuccess.voiceSeparation,
-        transcriptTexts: transcriptList,
-      ));
-    },
-  );
-}
+//   result.fold(
+//     (failure) {
+//       emit(state.copyWith(
+//         isLoading: MeetingsIsLoading.none,
+//         isFailure: MeetingsIsFailure.voiceSeparation,
+//         failure: failure,
+//       ));
+//     },
+//     (transcriptList) {
+//       emit(state.copyWith(
+//         isLoading: MeetingsIsLoading.none,
+//         isSuccess: MeetingsIsSuccess.voiceSeparation,
+//         transcriptTexts: transcriptList,
+//       ));
+//     },
+//   );
+// }
 
 }

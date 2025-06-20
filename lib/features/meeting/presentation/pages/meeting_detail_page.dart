@@ -184,7 +184,7 @@ class MeetingDetailPage extends StatelessWidget {
                                         icon: Icon(Icons.hearing, color: themeBlue),
                                         tooltip: 'Voice Separation',
                                         onPressed: () {
-                                          context.read<MeetingCubit>().voiceSeparation(meetingId: meeting.id);
+                                          // context.read<MeetingCubit>().voiceSeparation(meetingId: meeting.id);
                                         },
                                       ),
                                   ],

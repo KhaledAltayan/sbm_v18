@@ -6,6 +6,7 @@ import 'package:sbm_v18/core/helpers/user_local_data.dart';
 import 'package:sbm_v18/core/network/api_urls.dart';
 import 'package:sbm_v18/core/network/failure.dart';
 import 'package:sbm_v18/features/meeting/data/model/meeting_information_model.dart';
+import 'package:sbm_v18/features/meeting/data/model/voice_separation_model.dart';
 
 class MeetingRemoteDataSource {
   // final token = ApiUrls.token;
@@ -316,40 +317,36 @@ class MeetingRemoteDataSource {
   }
 
 
-Future<Either<Failure, List<String>>> voiceSeparation({
-  required int meetingId,
-}) async {
-  addLogger();
-  try {
-    final token = await UserLocalData.getToken();
-    final response = await dio.post(
-      'http://127.0.0.1:8000/api/meeting/voice-separation',
-      data: {'meeting_id': meetingId},
-      options: Options(
-        headers: {
+ Future<Either<Failure, List<VoiceSeparationModel>>> voiceSeparation(
+    String meetingId,
+  ) async {
+    addLogger();
+    try {
+      final token = await UserLocalData.getToken();
+      final response = await dio.post(
+        ApiUrls.voiceSeparation,
+        data: {'meeting_id': meetingId},
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        ),
+      );
 
-          'Accept': 'application/json',
-          'Authorization': 'Bearer $token',
-        },
-      ),
-    );
-
-    if (response.statusCode == 200 && response.data['transcript'] != null) {
-      final List<dynamic> transcriptData = response.data['transcript'];
-
-      // Extract only non-empty text values
-      final List<String> transcriptTexts = transcriptData
-          .map((item) => item['text']?.toString() ?? '')
-          .where((text) => text.trim().isNotEmpty)
-          .toList();
-
-      return Right(transcriptTexts);
-    } else {
-      return Left(Failure(message: response.data['message'] ?? 'Unknown error'));
+      if (response.statusCode == 200 && response.data['transcript'] is List) {
+        final transcript = response.data['transcript'] as List;
+        final result = transcript.map((item) => VoiceSeparationModel.fromJson(item)).toList();
+        return Right(result);
+      } else {
+        if (kDebugMode) {
+          debugPrint('VoiceSeparation API error: ${response.data}');
+        }
+        return Left(Failure(message: response.data['message'] ?? 'Unknown error'));
+      }
+    } catch (e) {
+      return Left(Failure.handleError(e));
     }
-  } catch (e) {
-    return Left(Failure.handleError(e));
   }
-}
 
 }
