@@ -71,7 +71,7 @@ class _VoiceSeparationPageState extends State<VoiceSeparationPage> {
             ElevatedButton.icon(
               onPressed: () {
                 context.read<MeetingCubit>().summarizeMeeting(
-                      query: 'لخص الاجتماع',
+                      query: 'نقاط رئيسية' ,
                       document: document,
                     );
               },

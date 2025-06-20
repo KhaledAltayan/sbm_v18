@@ -156,6 +156,7 @@ class _TranslationPageState extends State<TranslationPage> {
                 } else if (state.summaryText != null &&
                     state.summaryText!.isNotEmpty) {
                   return Card(
+                    color: Colors.blue[100],
                     elevation: 4,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12)),
