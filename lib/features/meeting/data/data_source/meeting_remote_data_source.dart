@@ -316,10 +316,9 @@ class MeetingRemoteDataSource {
     }
   }
 
-
- Future<Either<Failure, List<VoiceSeparationModel>>> voiceSeparation(
-    String meetingId,
-  ) async {
+  Future<Either<Failure, List<VoiceSeparationModel>>> voiceSeparation({
+    required int meetingId,
+  }) async {
     addLogger();
     try {
       final token = await UserLocalData.getToken();
@@ -336,17 +335,21 @@ class MeetingRemoteDataSource {
 
       if (response.statusCode == 200 && response.data['transcript'] is List) {
         final transcript = response.data['transcript'] as List;
-        final result = transcript.map((item) => VoiceSeparationModel.fromJson(item)).toList();
+        final result =
+            transcript
+                .map((item) => VoiceSeparationModel.fromJson(item))
+                .toList();
         return Right(result);
       } else {
         if (kDebugMode) {
           debugPrint('VoiceSeparation API error: ${response.data}');
         }
-        return Left(Failure(message: response.data['message'] ?? 'Unknown error'));
+        return Left(
+          Failure(message: response.data['message'] ?? 'Unknown error'),
+        );
       }
     } catch (e) {
       return Left(Failure.handleError(e));
     }
   }
-
 }

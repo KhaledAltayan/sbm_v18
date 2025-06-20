@@ -4,16 +4,16 @@ import 'package:sbm_v18/core/style/app_color.dart';
 import 'package:sbm_v18/features/meeting/presentation/manager/meeting_cubit.dart';
 import 'package:sbm_v18/features/meeting/presentation/manager/meeting_state.dart';
 
-class TranslationPage extends StatefulWidget {
-  final String transcribedText;
+class VoiceSeparationPage extends StatefulWidget {
+  final List<String> transcripts;
 
-  const TranslationPage({super.key, required this.transcribedText});
+  const VoiceSeparationPage({super.key, required this.transcripts});
 
   @override
-  State<TranslationPage> createState() => _TranslationPageState();
+  State<VoiceSeparationPage> createState() => _VoiceSeparationPageState();
 }
 
-class _TranslationPageState extends State<TranslationPage> {
+class _VoiceSeparationPageState extends State<VoiceSeparationPage> {
   final TextEditingController _queryController = TextEditingController();
 
   @override
@@ -25,13 +25,14 @@ class _TranslationPageState extends State<TranslationPage> {
   @override
   Widget build(BuildContext context) {
     final blueColor = Colors.blue.shade700;
+    final document = widget.transcripts.join('\n');
 
     return Scaffold(
       appBar: AppBar(
-        title:  Text("Transcription Result", style: TextStyle(color: AppColor.white),),
+        title:  Text("Voice Separation",style: TextStyle(color: AppColor.white),),
         backgroundColor: blueColor,
         elevation: 2,
-         iconTheme: IconThemeData(color: AppColor.white),
+        iconTheme: IconThemeData(color: AppColor.white),
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(bottom: Radius.circular(16)),
         ),
@@ -42,7 +43,7 @@ class _TranslationPageState extends State<TranslationPage> {
         child: ListView(
           children: [
             const Text(
-              "Transcript:",
+              "Separated Voice Transcript:",
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
@@ -50,35 +51,37 @@ class _TranslationPageState extends State<TranslationPage> {
               ),
             ),
             const SizedBox(height: 12),
-            Card(
+            ...widget.transcripts.map((t) => Card(
               color: Colors.blue[100],
               elevation: 3,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12)),
               shadowColor: blueColor.withOpacity(0.3),
+              margin: const EdgeInsets.symmetric(vertical: 6),
               child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: Text(
-                  widget.transcribedText,
+                  t,
                   style: const TextStyle(fontSize: 16, color: Colors.black87),
                 ),
               ),
-            ),
+            )),
             const SizedBox(height: 32),
 
             ElevatedButton.icon(
               onPressed: () {
                 context.read<MeetingCubit>().summarizeMeeting(
                       query: 'لخص الاجتماع',
-                      document: widget.transcribedText,
+                      document: document,
                     );
               },
               icon: const Icon(Icons.summarize),
               label: const Text(
                 "Summarization (Default Query)",
                 style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16, fontWeight: FontWeight.w600),
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600),
               ),
               style: ElevatedButton.styleFrom(
                 backgroundColor: blueColor,
@@ -121,7 +124,7 @@ class _TranslationPageState extends State<TranslationPage> {
                 if (query.isNotEmpty) {
                   context.read<MeetingCubit>().summarizeMeeting(
                         query: query,
-                        document: widget.transcribedText,
+                        document: document,
                       );
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -133,8 +136,9 @@ class _TranslationPageState extends State<TranslationPage> {
               label: const Text(
                 "Summarize with Query",
                 style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16, fontWeight: FontWeight.w600),
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600),
               ),
               style: ElevatedButton.styleFrom(
                 backgroundColor: blueColor,
@@ -156,6 +160,7 @@ class _TranslationPageState extends State<TranslationPage> {
                 } else if (state.summaryText != null &&
                     state.summaryText!.isNotEmpty) {
                   return Card(
+                    color: Colors.blue[100],
                     elevation: 4,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12)),
@@ -185,7 +190,8 @@ class _TranslationPageState extends State<TranslationPage> {
                       ),
                     ),
                   );
-                } else if (state.isFailure == MeetingsIsFailure.summarizeMeeting &&
+                } else if (state.isFailure ==
+                        MeetingsIsFailure.summarizeMeeting &&
                     state.failure != null) {
                   return Padding(
                     padding: const EdgeInsets.all(12),

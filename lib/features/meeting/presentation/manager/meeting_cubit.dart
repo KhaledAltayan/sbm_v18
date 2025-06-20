@@ -242,66 +242,95 @@ class MeetingCubit extends Cubit<MeetingState> {
         );
       },
     );
-
-    
   }
 
   void summarizeMeeting({
-      required String query,
-      required String document,
-    }) async {
-      emit(state.copyWith(isLoading: MeetingsIsLoading.summarizeMeeting));
+    required String query,
+    required String document,
+  }) async {
+    emit(state.copyWith(isLoading: MeetingsIsLoading.summarizeMeeting));
 
-      final result = await remote.summarizeMeeting(
-        query: query,
-        document: document,
-      );
+    final result = await remote.summarizeMeeting(
+      query: query,
+      document: document,
+    );
 
-      result.fold(
-        (failure) {
-          emit(
-            state.copyWith(
-              isLoading: MeetingsIsLoading.none,
-              isFailure: MeetingsIsFailure.summarizeMeeting,
-              failure: failure,
-            ),
-          );
-        },
-        (summaryText) {
-          emit(
-            state.copyWith(
-              isLoading: MeetingsIsLoading.none,
-              isSuccess: MeetingsIsSuccess.summarizeMeeting,
-              summaryText: summaryText,
-            ),
-          );
-        },
-      );
-    }
+    result.fold(
+      (failure) {
+        emit(
+          state.copyWith(
+            isLoading: MeetingsIsLoading.none,
+            isFailure: MeetingsIsFailure.summarizeMeeting,
+            failure: failure,
+          ),
+        );
+      },
+      (summaryText) {
+        emit(
+          state.copyWith(
+            isLoading: MeetingsIsLoading.none,
+            isSuccess: MeetingsIsSuccess.summarizeMeeting,
+            summaryText: summaryText,
+          ),
+        );
+      },
+    );
+  }
 
+  // void voiceSeparation({required int meetingId}) async {
+  //   emit(state.copyWith(isLoading: MeetingsIsLoading.voiceSeparation));
 
+  //   final result = await remote.voiceSeparation(meetingId: meetingId);
 
-//     void voiceSeparation({required int meetingId}) async {
-//   emit(state.copyWith(isLoading: MeetingsIsLoading.voiceSeparation));
+  //   result.fold(
+  //     (failure) {
+  //       emit(
+  //         state.copyWith(
+  //           isLoading: MeetingsIsLoading.none,
+  //           isFailure: MeetingsIsFailure.voiceSeparation,
+  //           failure: failure,
+  //         ),
+  //       );
+  //     },
+  //     (transcriptList) {
+  //       emit(
+  //         state.copyWith(
+  //           isLoading: MeetingsIsLoading.none,
+  //           isSuccess: MeetingsIsSuccess.voiceSeparation,
+  //           transcriptTexts: transcriptList,
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 
-//   final result = await remote.voiceSeparation(meetingId: meetingId);
+  Future<void> getVoiceSeparation(int meetingId) async {
+    emit(state.copyWith(isLoading: MeetingsIsLoading.voiceSeparation));
 
-//   result.fold(
-//     (failure) {
-//       emit(state.copyWith(
-//         isLoading: MeetingsIsLoading.none,
-//         isFailure: MeetingsIsFailure.voiceSeparation,
-//         failure: failure,
-//       ));
-//     },
-//     (transcriptList) {
-//       emit(state.copyWith(
-//         isLoading: MeetingsIsLoading.none,
-//         isSuccess: MeetingsIsSuccess.voiceSeparation,
-//         transcriptTexts: transcriptList,
-//       ));
-//     },
-//   );
-// }
+    final result = await remote.voiceSeparation(meetingId: meetingId);
 
+    result.fold(
+      (failure) {
+        emit(
+          state.copyWith(
+            failure: failure,
+            isLoading: MeetingsIsLoading.none,
+            isFailure: MeetingsIsFailure.voiceSeparation,
+          ),
+        );
+      },
+      (list) {
+        final transcriptTexts =
+            list.map((e) => "${e.speaker}: ${e.text}").toList();
+
+        emit(
+          state.copyWith(
+            voiceSeparation: transcriptTexts,
+            isLoading: MeetingsIsLoading.none,
+            isSuccess: MeetingsIsSuccess.voiceSeparation,
+          ),
+        );
+      },
+    );
+  }
 }

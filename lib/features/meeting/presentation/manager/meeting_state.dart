@@ -12,6 +12,7 @@ class MeetingState {
   final String? transcribedText;
   final String? summaryText;
   final List<String>? transcriptTexts;
+  final List<String>? voiceSeparation;
 
   final Failure? failure;
 
@@ -23,7 +24,7 @@ class MeetingState {
 
   MeetingState({
     this.transcriptTexts,
-
+this.voiceSeparation,
     this.summaryText,
     this.transcribedText,
     this.inviteStatusMessage,
@@ -45,9 +46,11 @@ class MeetingState {
     List<MeetingInformationModel>? meetings,
     List<MeetingInformationModel>? allMeetings,
     List<MeetingInformationModel>? allMeetingsByDate,
+
     final String? summaryText,
     Failure? failure,
     final List<String>? transcriptTexts,
+    final List<String>? voiceSeparation,
     final String? inviteStatusMessage,
     String? joinRequestStatus,
     String? joinResponseStatus,
@@ -66,6 +69,7 @@ class MeetingState {
       allMeetingsByDate: allMeetingsByDate ?? [],
       meet: meet,
       transcriptTexts: transcriptTexts,
+      voiceSeparation: voiceSeparation,
       summaryText: summaryText,
       transcribedText: transcribedText,
       inviteStatusMessage: inviteStatusMessage,
