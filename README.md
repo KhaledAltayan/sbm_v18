@@ -4,7 +4,7 @@
 
 **Meeting Management & AI-Powered Summarization System**
 
-![Image](https://github.com/user-attachments/assets/8b2b162b-b6e9-46be-8148-454ffcfe006d)
+![Image](https://github.com/user-attachments/assets/b56ffa05-bfd0-4e24-89dd-d9a7651c7c9e)
 
 ---
 
