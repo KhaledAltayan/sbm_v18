@@ -60,7 +60,7 @@ Many organizations still rely on manual note-taking and follow-up methods. SBM r
 
 | Home | Meeting Detail | AI Summary |
 |------|----------------|------------|
-| ![home](https://github.com/user-attachments/assets/601bbdea-d815-4073-92b0-1362378beb40)| ![meeting](https://github.com/user-attachments/assets/370a2c27-a5f7-4ab2-8125-865f541151cb) | ![summary](https://github.com/user-attachments/assets/1ac0da34-2aba-41e5-aeb0-892bd803729b) |
+| ![home](https://github.com/user-attachments/assets/03380d35-de58-4512-b9bb-0cf8a40bc5a3)| ![meeting](https://github.com/user-attachments/assets/1c4498d2-b9c9-46c8-a835-52f5f22fd9b7) | ![summary](https://github.com/user-attachments/assets/f360a450-bb4c-4981-be17-738abdbec671) |
 
 ---
 
@@ -73,10 +73,9 @@ MIT License © [Khaled Tayan](https://github.com/your-username)
 ## 🤝 Contact  
 For collaborations, hiring, or feedback:
 
-- ✉️ **Email:** khaled.dev@example.com  
-- 🐦 **Twitter:** [@khaledflutter](https://twitter.com/khaledflutter)  
-- 💼 **LinkedIn:** [Khaled Tayan](https://linkedin.com/in/khaledtayan)  
-- 💻 **GitHub:** [github.com/khaled-dev](https://github.com/khaled-dev)
+- ✉️ **Email:** khaledtyan07@gmail.com  
+- 💼 **LinkedIn:** [Khaled Altayan](https://www.linkedin.com/in/khaled-altayan-8a2b8b252/)  
+
 
 ---
 
