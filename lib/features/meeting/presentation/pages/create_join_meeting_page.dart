@@ -3,13 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sbm_v18/core/style/app_assets.dart';
 import 'package:sbm_v18/features/meeting/presentation/manager/meeting_cubit.dart';
 
-
 import 'package:sbm_v18/features/meeting/presentation/manager/meeting_state.dart';
 import 'package:sbm_v18/features/meeting/presentation/pages/create_meeting_page.dart';
 
 import 'package:sbm_v18/features/meeting/presentation/pages/invite_meet_page.dart';
 import 'package:sbm_v18/features/meeting/presentation/pages/join_meeting_page.dart';
-
 
 class CreateJoinMeetingPage extends StatelessWidget {
   const CreateJoinMeetingPage({super.key});
@@ -97,7 +95,7 @@ class CreateJoinMeetingPage extends StatelessWidget {
                             builder:
                                 (context2) => BlocProvider.value(
                                   value: BlocProvider.of<MeetingCubit>(context),
-                                  child:  JoinMeetingPage(),
+                                  child: JoinMeetingPage(),
                                 ),
                           ),
                         );

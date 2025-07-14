@@ -170,10 +170,14 @@
 
 import 'dart:convert';
 
+import 'package:dartz/dartz_streaming.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:jitsi_meet_flutter_sdk/jitsi_meet_flutter_sdk.dart';
 import 'package:sbm_v18/core/services/api_service.dart';
+import 'package:sbm_v18/features/meeting/data/data_source/meeting_remote_data_source.dart';
 
 // Note: You'll need a way to access your TokenModel.
 // This example assumes it's accessible.
@@ -211,6 +215,8 @@ void notificationTapBackground(NotificationResponse details) {
 }
 
 class NotificationService {
+  final MeetingRemoteDataSource remote = MeetingRemoteDataSource();
+  final jitsiMeet = JitsiMeet();
   NotificationService._();
   static final NotificationService instance = NotificationService._();
 
@@ -373,7 +379,7 @@ class NotificationService {
   //   }
   // }
 
-  void handleNotificationAction(String? payload, String? actionId) {
+  void handleNotificationAction(String? payload, String? actionId) async {
     if (kDebugMode) {
       print("تم الضغط على الإشعار: '$actionId' مع البيانات: $payload");
     }
@@ -384,22 +390,79 @@ class NotificationService {
         data = jsonDecode(payload);
       } catch (e) {
         print("خطأ في فك ترميز البيانات: $e");
+        return;
       }
     }
 
     final invitationId = data['invitation_id'];
+    final rommId = data['room_id'];
+
+    if (invitationId == null) {
+      print("⚠️ لا يوجد invitation_id في البيانات");
+      return;
+    }
+
+    final int id = int.tryParse(invitationId.toString()) ?? -1;
+    if (id == -1) {
+      print("⚠️ قيمة invitation_id غير صالحة");
+      return;
+    }
 
     switch (actionId) {
       case 'accept_action':
-        if (invitationId != null) {
-          // _apiService.acceptInvitation(invitationId.toString());
-        }
+        final result = await remote.respondToInvitation(
+          invitationId: id,
+          action: 'accept',
+        );
+
+        result.fold((failure) => print("❌ فشل: ${failure.message}"), (roomUrl) {
+          print("✅ تم القبول. رابط الغرفة: $roomUrl");
+          // TODO: Join Jitsi room here
+
+          final options = JitsiMeetConferenceOptions(
+            serverURL: "https://meet.ffmuc.net/",
+            room: rommId,
+            userInfo: JitsiMeetUserInfo(displayName: "Participant"),
+            featureFlags: {
+              FeatureFlags.meetingNameEnabled: true,
+              FeatureFlags.kickOutEnabled: true,
+              FeatureFlags.videoShareEnabled: false,
+              FeatureFlags.securityOptionEnabled: false,
+              FeatureFlags.meetingPasswordEnabled: false,
+              FeatureFlags.preJoinPageEnabled: false,
+              FeatureFlags.replaceParticipant: false,
+              FeatureFlags.lobbyModeEnabled: false,
+              FeatureFlags.unsafeRoomWarningEnabled: false,
+              FeatureFlags.raiseHandEnabled: true,
+              FeatureFlags.inviteEnabled: false,
+              FeatureFlags.carModeEnabled: false,
+              FeatureFlags.addPeopleEnabled: false,
+              FeatureFlags.speakerStatsEnabled: true,
+              FeatureFlags.recordingEnabled: true,
+            },
+            configOverrides: {
+              "startWithAudioMuted": false,
+              "startWithVideoMuted": false,
+              "disableDeepLinking": true,
+              "disableThirdPartyRequests": true,
+              "subject": "Smart Business Meeting",
+            },
+          );
+
+          jitsiMeet.join(options);
+        });
         break;
 
       case 'reject_action':
-        if (invitationId != null) {
-          // _apiService.rejectInvitation(invitationId.toString());
-        }
+        final result = await remote.respondToInvitation(
+          invitationId: id,
+          action: 'reject',
+        );
+
+        result.fold(
+          (failure) => print("❌ فشل: ${failure.message}"),
+          (message) => print("🚫 تم الرفض بنجاح"),
+        );
         break;
 
       default:
@@ -453,14 +516,10 @@ class NotificationService {
   Future<void> _getAndPrintFCMToken() async {
     final token = await _messaging.getToken();
     if (token != null) {
-
-
       // TokenModel.fcm = token; // Uncomment when your model is available
     }
     if (kDebugMode) {
       print("FCM Token: $token");
-
-      
     }
     // Also listen for token refreshes and send them to your server.
     _messaging.onTokenRefresh.listen((newToken) {

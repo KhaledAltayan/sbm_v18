@@ -352,4 +352,39 @@ class MeetingRemoteDataSource {
       return Left(Failure.handleError(e));
     }
   }
+
+  Future<Either<Failure, String>> respondToInvitation({
+    required int invitationId,
+    required String action,
+  }) async {
+    addLogger(); // optional debug/logger
+
+    try {
+      final token = await UserLocalData.getToken();
+
+      final response = await dio.post(
+        ApiUrls.respondToInvitation,
+        data: {'invitation_id': invitationId, 'action': action},
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        final roomUrl = response.data['room_url'];
+        return Right(
+          roomUrl,
+        ); // you may choose to return `status` instead if needed
+      } else {
+        return Left(
+          Failure(message: response.data['message'] ?? 'فشل الرد على الدعوة'),
+        );
+      }
+    } catch (e) {
+      return Left(Failure.handleError(e));
+    }
+  }
 }

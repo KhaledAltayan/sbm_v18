@@ -303,10 +303,10 @@ class _InviteMeetPageState extends State<InviteMeetPage> {
 
               if (context.watch<AuthCubit>().state.isLoading ==
                   AuthIsLoading.searchingUser)
-                const Padding(
-                  padding: EdgeInsets.only(bottom: 16),
-                  child: CircularProgressIndicator(),
-                ),
+                // const Padding(
+                //   padding: EdgeInsets.only(bottom: 16),
+                //   child: CircularProgressIndicator(),
+                // ),
 
               const SizedBox(height: 8),
 

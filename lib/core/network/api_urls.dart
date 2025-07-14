@@ -1,5 +1,5 @@
 class ApiUrls {
-  static const String _baseUrl = 'http://192.168.25.125:8000';
+  static const String _baseUrl = 'http://192.168.1.120:8000';
 
   // Auth
 
@@ -12,6 +12,9 @@ class ApiUrls {
   static const String recordMeeting = '$_baseUrl/api/meeting/recording-meeting';
   static const String searchUserByEmail =
       '$_baseUrl/api/auth/search-user-by-email';
+
+  static const String respondToInvitation =
+      '$_baseUrl/api/invitation/user-respond-creator-invitation';
   static const String searchMeetings = '$_baseUrl/api/meeting/search-by-date';
   static const String respondToCreatorInvitation =
       '$_baseUrl/api/invitation/respond-to-join-request';
