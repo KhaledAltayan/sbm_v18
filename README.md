@@ -82,7 +82,7 @@ For collaborations, hiring, or feedback:
 ## 📦 Installation & Run (Flutter)
 
 ```bash
-git clone https://github.com/your-username/sbm_app.git
-cd sbm_app
+git clone https://github.com/KhaledAltayan/sbm_v18.git
+cd sbm_v18
 flutter pub get
 flutter run
