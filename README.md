@@ -64,11 +64,6 @@ Many organizations still rely on manual note-taking and follow-up methods. SBM r
 
 ---
 
-## 📄 License
-
-MIT License © [Khaled Tayan](https://github.com/your-username)
-
----
 
 ## 🤝 Contact  
 For collaborations, hiring, or feedback:
